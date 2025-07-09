@@ -1,10 +1,17 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
+import { ApolloProvider } from '@apollo/client'
+import { RecoilRoot } from 'recoil'
 import App from './App.tsx'
+import apolloClient from './lib/apollo'
 import './index.css'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <App />
+    <ApolloProvider client={apolloClient}>
+      <RecoilRoot>
+        <App />
+      </RecoilRoot>
+    </ApolloProvider>
   </React.StrictMode>,
 )
