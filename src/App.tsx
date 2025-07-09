@@ -1,9 +1,12 @@
 import { useCountries } from './hooks/useCountries';
+import { useUrlState } from './hooks/useUrlState';
 import { CountryTable } from './components/CountryTable';
+import { Pagination } from './components/Pagination';
 import { TableHeader } from './components/TableHeader';
 
 function App() {
   const { countries, loading, error } = useCountries();
+  useUrlState(); // Initialize URL state synchronization
 
   if (loading) {
     return (
@@ -39,8 +42,8 @@ function App() {
         
         <div className="bg-white rounded-lg shadow-lg overflow-hidden">
           <CountryTable />
-          <div className="border-t border-gray-200 p-4 text-center text-gray-500">
-            Showing first 10 countries
+          <div className="border-t border-gray-200 p-4">
+            <Pagination />
           </div>
         </div>
       </div>

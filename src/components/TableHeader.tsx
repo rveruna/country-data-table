@@ -1,12 +1,12 @@
 import { useRecoilValue } from 'recoil';
-import { countriesState } from '../store/countryStore';
+import { filteredCountriesSelector } from '../store/countryStore';
 
 interface TableHeaderProps {
   className?: string;
 }
 
 export const TableHeader: React.FC<TableHeaderProps> = ({ className = '' }) => {
-  const countries = useRecoilValue(countriesState);
+  const filteredCountries = useRecoilValue(filteredCountriesSelector);
 
   return (
     <div className={`bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-4 ${className}`}>
@@ -19,10 +19,10 @@ export const TableHeader: React.FC<TableHeaderProps> = ({ className = '' }) => {
         </div>
         <div className="text-right">
           <div className="text-2xl font-bold text-blue-600">
-            {countries.length}
+            {filteredCountries.length}
           </div>
           <div className="text-sm text-gray-500">
-            {countries.length === 1 ? 'country' : 'countries'} loaded
+            {filteredCountries.length === 1 ? 'country' : 'countries'} found
           </div>
         </div>
       </div>

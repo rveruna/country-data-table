@@ -1,5 +1,5 @@
 import { useRecoilValue } from 'recoil';
-import { countriesState } from '../store/countryStore';
+import { paginatedCountriesSelector } from '../store/countryStore';
 import { Country } from '../types/country';
 
 interface CountryTableProps {
@@ -7,10 +7,7 @@ interface CountryTableProps {
 }
 
 export const CountryTable: React.FC<CountryTableProps> = ({ className = '' }) => {
-  const countries = useRecoilValue(countriesState);
-  
-  // For now, just show first 10 countries (basic display)
-  const displayedCountries = countries.slice(0, 10);
+  const paginatedCountries = useRecoilValue(paginatedCountriesSelector);
 
   return (
     <div className={`overflow-x-auto ${className}`}>
@@ -32,7 +29,7 @@ export const CountryTable: React.FC<CountryTableProps> = ({ className = '' }) =>
           </tr>
         </thead>
         <tbody className="divide-y divide-gray-200">
-          {displayedCountries.map((country: Country) => (
+          {paginatedCountries.map((country: Country) => (
             <tr key={country.code} className="hover:bg-gray-50 transition-colors">
               <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                 {country.name}
@@ -51,9 +48,12 @@ export const CountryTable: React.FC<CountryTableProps> = ({ className = '' }) =>
         </tbody>
       </table>
       
-      {displayedCountries.length === 0 && (
+      {paginatedCountries.length === 0 && (
         <div className="text-center py-12">
           <div className="text-gray-500 text-lg">No countries found</div>
+          <div className="text-gray-400 text-sm mt-2">
+            Try adjusting your filters or search terms
+          </div>
         </div>
       )}
     </div>
