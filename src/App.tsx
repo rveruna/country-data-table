@@ -92,19 +92,19 @@ function App() {
   return (
     <ErrorBoundary>
       <NetworkStatus />
-      <div className="min-h-screen bg-gray-100 py-8">
-        <div className="max-w-7xl mx-auto px-4">
-          <h1 className="text-4xl font-bold text-gray-800 mb-8 text-center">
+      <div className="min-h-screen bg-gray-100 py-4 px-2 sm:py-8 sm:px-4">
+        <div className="max-w-7xl mx-auto">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 mb-6 sm:mb-8 text-center px-4">
             Country Data Table
           </h1>
           
-          <TableHeader className="mb-6" />
+          <TableHeader className="mb-4 sm:mb-6 mx-2 sm:mx-0" />
           
-          <FilterControls className="mb-6" />
+          <FilterControls className="mb-4 sm:mb-6 mx-2 sm:mx-0" />
           
-          <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+          <div className="bg-white rounded-lg shadow-lg overflow-hidden mx-2 sm:mx-0">
             <CountryTable />
-            <div className="border-t border-gray-200 p-4">
+            <div className="border-t border-gray-200 p-2 sm:p-4">
               <Pagination />
             </div>
           </div>

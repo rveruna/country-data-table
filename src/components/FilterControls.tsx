@@ -32,12 +32,12 @@ export const FilterControls: React.FC<FilterControlsProps> = ({ className = '' }
   const hasActiveFilters = filters.continent || filters.currency || filters.search;
 
   return (
-    <div className={`bg-white rounded-lg shadow-sm border border-gray-200 p-4 ${className}`}>
-      <div className="flex flex-col lg:flex-row gap-4">
-        <div className="flex flex-col lg:flex-row gap-4 flex-1">
+    <div className={`bg-white rounded-lg shadow-sm border border-gray-200 p-3 sm:p-4 ${className}`}>
+      <div className="space-y-4 lg:space-y-0 lg:flex lg:gap-4">
+        <div className="flex-1 space-y-4 lg:space-y-0 lg:flex lg:gap-4">
           <SearchInput className="flex-1 lg:flex-2" />
           
-          <div className="flex flex-col sm:flex-row gap-4 flex-1">
+          <div className="flex flex-col sm:flex-row gap-4 lg:flex-1">
             <FilterDropdown
               label="Continent"
               value={filters.continent}
@@ -59,10 +59,10 @@ export const FilterControls: React.FC<FilterControlsProps> = ({ className = '' }
         </div>
         
         {hasActiveFilters && (
-          <div className="flex items-end">
+          <div className="flex justify-center lg:justify-start lg:items-end">
             <button
               onClick={clearFilters}
-              className="px-4 py-2 text-sm text-red-600 hover:text-red-700 hover:bg-red-50 border border-red-200 rounded-md transition-colors"
+              className="px-4 py-2 text-sm text-red-600 hover:text-red-700 hover:bg-red-50 border border-red-200 rounded-md transition-colors whitespace-nowrap"
             >
               Clear Filters
             </button>
@@ -78,10 +78,10 @@ export const FilterControls: React.FC<FilterControlsProps> = ({ className = '' }
       
       {hasActiveFilters && (
         <div className="mt-3 pt-3 border-t border-gray-200">
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-2 justify-center sm:justify-start">
             {filters.continent && (
               <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                Continent: {filters.continent}
+                <span className="hidden sm:inline">Continent: </span>{filters.continent}
                 <button
                   onClick={() => handleContinentChange(undefined)}
                   className="ml-1 text-blue-600 hover:text-blue-800"
@@ -92,7 +92,7 @@ export const FilterControls: React.FC<FilterControlsProps> = ({ className = '' }
             )}
             {filters.currency && (
               <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                Currency: {filters.currency}
+                <span className="hidden sm:inline">Currency: </span>{filters.currency}
                 <button
                   onClick={() => handleCurrencyChange(undefined)}
                   className="ml-1 text-green-600 hover:text-green-800"
@@ -103,7 +103,8 @@ export const FilterControls: React.FC<FilterControlsProps> = ({ className = '' }
             )}
             {filters.search && (
               <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
-                Search: {filters.search}
+                <span className="hidden sm:inline">Search: </span>
+                <span className="max-w-24 sm:max-w-none truncate">{filters.search}</span>
                 <button
                   onClick={() => setFilters(prev => ({ ...prev, search: undefined }))}
                   className="ml-1 text-purple-600 hover:text-purple-800"
