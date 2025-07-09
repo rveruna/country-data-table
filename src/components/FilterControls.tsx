@@ -1,6 +1,8 @@
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { filtersState, uniqueCurrenciesSelector } from '../store/countryStore';
 import { FilterDropdown } from './FilterDropdown';
+import { SearchInput } from './SearchInput';
+import { SearchResults } from './SearchResults';
 import { CONTINENTS } from '../utils/constants';
 
 interface FilterControlsProps {
@@ -32,24 +34,28 @@ export const FilterControls: React.FC<FilterControlsProps> = ({ className = '' }
   return (
     <div className={`bg-white rounded-lg shadow-sm border border-gray-200 p-4 ${className}`}>
       <div className="flex flex-col lg:flex-row gap-4">
-        <div className="flex flex-col sm:flex-row gap-4 flex-1">
-          <FilterDropdown
-            label="Continent"
-            value={filters.continent}
-            options={CONTINENTS}
-            onChange={handleContinentChange}
-            placeholder="All Continents"
-            className="flex-1"
-          />
+        <div className="flex flex-col lg:flex-row gap-4 flex-1">
+          <SearchInput className="flex-1 lg:flex-2" />
           
-          <FilterDropdown
-            label="Currency"
-            value={filters.currency}
-            options={uniqueCurrencies}
-            onChange={handleCurrencyChange}
-            placeholder="All Currencies"
-            className="flex-1"
-          />
+          <div className="flex flex-col sm:flex-row gap-4 flex-1">
+            <FilterDropdown
+              label="Continent"
+              value={filters.continent}
+              options={CONTINENTS}
+              onChange={handleContinentChange}
+              placeholder="All Continents"
+              className="flex-1"
+            />
+            
+            <FilterDropdown
+              label="Currency"
+              value={filters.currency}
+              options={uniqueCurrencies}
+              onChange={handleCurrencyChange}
+              placeholder="All Currencies"
+              className="flex-1"
+            />
+          </div>
         </div>
         
         {hasActiveFilters && (
@@ -63,6 +69,12 @@ export const FilterControls: React.FC<FilterControlsProps> = ({ className = '' }
           </div>
         )}
       </div>
+      
+      {filters.search && (
+        <div className="mt-3 pt-3 border-t border-gray-200">
+          <SearchResults />
+        </div>
+      )}
       
       {hasActiveFilters && (
         <div className="mt-3 pt-3 border-t border-gray-200">

@@ -44,9 +44,23 @@ export const filteredCountriesSelector = selector({
       const matchesCurrency = !filters.currency || 
         (country.currency && country.currency.includes(filters.currency));
       
-      const matchesSearch = !filters.search || 
-        country.name.toLowerCase().includes(filters.search.toLowerCase()) ||
-        country.code.toLowerCase() === filters.search.toLowerCase();
+      const matchesSearch = !filters.search || (() => {
+        const searchTerm = filters.search.toLowerCase().trim();
+        const countryName = country.name.toLowerCase();
+        const countryCode = country.code.toLowerCase();
+        
+        // Exact match for country code
+        if (countryCode === searchTerm) return true;
+        
+        // Fuzzy/similarity search for country name
+        if (countryName.includes(searchTerm)) return true;
+        
+        // Check if search term matches start of any word in country name
+        const nameWords = countryName.split(' ');
+        if (nameWords.some(word => word.startsWith(searchTerm))) return true;
+        
+        return false;
+      })();
 
       return matchesContinent && matchesCurrency && matchesSearch;
     });
