@@ -63,4 +63,9 @@ export const useUrlState = () => {
       search: searchParam || undefined,
     });
   }, [searchParams, setPagination, setFilters]);
+
+  // Reset to page 1 when filters change
+  useEffect(() => {
+    setPagination(prev => ({ ...prev, page: 1 }));
+  }, [filters.continent, filters.currency, filters.search, setPagination]);
 };

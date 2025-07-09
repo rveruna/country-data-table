@@ -3,6 +3,7 @@ import { useUrlState } from './hooks/useUrlState';
 import { CountryTable } from './components/CountryTable';
 import { Pagination } from './components/Pagination';
 import { TableHeader } from './components/TableHeader';
+import { FilterControls } from './components/FilterControls';
 
 function App() {
   const { countries, loading, error } = useCountries();
@@ -39,6 +40,8 @@ function App() {
         </h1>
         
         <TableHeader className="mb-6" />
+        
+        <FilterControls className="mb-6" />
         
         <div className="bg-white rounded-lg shadow-lg overflow-hidden">
           <CountryTable />
