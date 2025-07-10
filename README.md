@@ -4,7 +4,9 @@ A responsive, interactive data table component for displaying and managing count
 
 ## Live Demo
 
-![Country Data Table Demo](./Triyit_Screen_Recording.gif)
+<div align="center">
+  <img src="./Triyit_Screen_Recording.gif" alt="Country Data Table Demo" width="800" />
+</div>
 
 The application displays country data from the GraphQL Countries API with professional styling and full responsive design.
 
