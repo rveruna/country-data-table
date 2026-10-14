@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import App from '../App';
@@ -13,8 +13,6 @@ const url = () => new URLSearchParams(screen.getByTestId('location').textContent
 const loaded = () => screen.findByText('United States');
 
 describe('App: loading and errors', () => {
-  afterEach(() => vi.restoreAllMocks());
-
   it('shows placeholders while the countries load, then the table', async () => {
     renderApp();
     expect(screen.getByText('Loading country information...')).toBeInTheDocument();
@@ -40,16 +38,13 @@ describe('App: loading and errors', () => {
     expect(screen.getByText('No data available')).toBeInTheDocument();
   });
 
-  it('reloads the page when "Try Again" is pressed after an error', async () => {
-    const reload = vi.fn();
-    const original = window.location;
-    Object.defineProperty(window, 'location', { value: { ...original, reload }, writable: true });
-    renderWithProviders(<App />, { mocks: [countriesErrorMock('Network down')] });
+  it('requests the countries again when "Try Again" is pressed', async () => {
+    renderWithProviders(<App />, { mocks: [countriesErrorMock('Network down'), countriesQueryMock(countries)] });
 
     await userEvent.click(await screen.findByRole('button', { name: 'Try Again' }));
 
-    expect(reload).toHaveBeenCalledTimes(1);
-    Object.defineProperty(window, 'location', { value: original, writable: true });
+    expect(await screen.findByText('United States')).toBeInTheDocument();
+    expect(screen.queryByText('Failed to load countries')).not.toBeInTheDocument();
   });
 });
 

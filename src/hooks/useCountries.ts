@@ -19,10 +19,11 @@ export const useCountries = () => {
   const [pagination, setPagination] = useRecoilState(paginationState);
   const filteredCountries = useRecoilValue(filteredCountriesSelector);
 
-  const { data, loading: queryLoading, error: queryError } = useQuery<CountriesData>(
+  const { data, loading: queryLoading, error: queryError, refetch } = useQuery<CountriesData>(
     GET_COUNTRIES,
     {
       errorPolicy: 'all',
+      notifyOnNetworkStatusChange: true,
     }
   );
 
@@ -60,5 +61,6 @@ export const useCountries = () => {
     countries,
     loading,
     error,
+    refetch,
   };
 };
