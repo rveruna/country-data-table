@@ -1,24 +1,26 @@
 import { useState, useEffect } from 'react';
-import { useRecoilState } from 'recoil';
+import { useRecoilValue } from 'recoil';
 import { filtersState } from '../store/countryStore';
 import { useDebounce } from '../hooks/useDebounce';
+import { useFilterActions } from '../hooks/useFilterActions';
 
 interface SearchInputProps {
   className?: string;
 }
 
 export const SearchInput: React.FC<SearchInputProps> = ({ className = '' }) => {
-  const [filters, setFilters] = useRecoilState(filtersState);
+  const filters = useRecoilValue(filtersState);
+  const updateFilters = useFilterActions();
   const [searchTerm, setSearchTerm] = useState(filters.search || '');
   const debouncedSearchTerm = useDebounce(searchTerm, 300);
 
   // Update filters when debounced search term changes
   useEffect(() => {
-    setFilters(prev => ({
+    updateFilters(prev => ({
       ...prev,
       search: debouncedSearchTerm || undefined
     }));
-  }, [debouncedSearchTerm, setFilters]);
+  }, [debouncedSearchTerm, updateFilters]);
 
   // Sync from external changes only (URL, clear filters). Depending on searchTerm would
   // reset the text while the user types, because filters.search lags by the debounce.
