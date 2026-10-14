@@ -86,6 +86,7 @@ export const FilterControls: React.FC<FilterControlsProps> = ({ className = '' }
                 <span className="hidden sm:inline">Continent: </span>{filters.continent}
                 <button
                   onClick={() => handleContinentChange(undefined)}
+                  aria-label={`Remove ${filters.continent} filter`}
                   className="ml-1 text-blue-600 hover:text-blue-800"
                 >
                   ×
@@ -97,6 +98,7 @@ export const FilterControls: React.FC<FilterControlsProps> = ({ className = '' }
                 <span className="hidden sm:inline">Currency: </span>{filters.currency}
                 <button
                   onClick={() => handleCurrencyChange(undefined)}
+                  aria-label={`Remove ${filters.currency} filter`}
                   className="ml-1 text-green-600 hover:text-green-800"
                 >
                   ×
@@ -109,6 +111,7 @@ export const FilterControls: React.FC<FilterControlsProps> = ({ className = '' }
                 <span className="max-w-24 sm:max-w-none truncate">{filters.search}</span>
                 <button
                   onClick={() => updateFilters(prev => ({ ...prev, search: undefined }))}
+                  aria-label={`Remove search "${filters.search}"`}
                   className="ml-1 text-purple-600 hover:text-purple-800"
                 >
                   ×

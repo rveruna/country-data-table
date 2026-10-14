@@ -1,3 +1,4 @@
+import { useId } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { paginationState, filteredCountriesSelector } from '../store/countryStore';
 import { PAGINATION_OPTIONS } from '../utils/constants';
@@ -8,6 +9,7 @@ interface PaginationProps {
 
 export const Pagination: React.FC<PaginationProps> = ({ className = '' }) => {
   const [pagination, setPagination] = useRecoilState(paginationState);
+  const pageSizeId = useId();
   const filteredCountries = useRecoilValue(filteredCountriesSelector);
 
   const handlePageChange = (newPage: number) => {
@@ -22,7 +24,7 @@ export const Pagination: React.FC<PaginationProps> = ({ className = '' }) => {
     }));
   };
 
-  const startIndex = (pagination.page - 1) * pagination.limit + 1;
+  const startIndex = filteredCountries.length === 0 ? 0 : (pagination.page - 1) * pagination.limit + 1;
   const endIndex = Math.min(pagination.page * pagination.limit, filteredCountries.length);
 
   const maxVisiblePages = 5;
@@ -34,8 +36,9 @@ export const Pagination: React.FC<PaginationProps> = ({ className = '' }) => {
     <div className={`flex flex-col space-y-3 sm:space-y-0 sm:flex-row sm:justify-between sm:items-center ${className}`}>
       {/* Entries per page selector */}
       <div className="flex items-center gap-2 justify-center sm:justify-start">
-        <label className="text-sm text-gray-700 whitespace-nowrap">Show</label>
+        <label htmlFor={pageSizeId} className="text-sm text-gray-700 whitespace-nowrap">Show</label>
         <select
+          id={pageSizeId}
           value={pagination.limit}
           onChange={(e) => handleLimitChange(Number(e.target.value))}
           className="border border-gray-300 rounded-md px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -46,7 +49,7 @@ export const Pagination: React.FC<PaginationProps> = ({ className = '' }) => {
             </option>
           ))}
         </select>
-        <label className="text-sm text-gray-700 whitespace-nowrap">entries</label>
+        <span className="text-sm text-gray-700 whitespace-nowrap">entries</span>
       </div>
 
       {/* Page info */}
@@ -113,7 +116,7 @@ export const Pagination: React.FC<PaginationProps> = ({ className = '' }) => {
 
         <button
           onClick={() => handlePageChange(pagination.page + 1)}
-          disabled={pagination.page === pagination.totalPages}
+          disabled={pagination.page >= pagination.totalPages}
           className="px-2 sm:px-3 py-1 text-sm border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <span className="hidden sm:inline">Next</span>
