@@ -11,7 +11,7 @@ Data comes from the public [Countries GraphQL API](https://countries.trevorblade
 - Table of country name, code, continent and currency
 - Pagination with 10, 20, 50 or 100 rows per page
 - Filters for continent and currency
-- Search that matches an exact country code, any part of a country name, or the start of any word in it, debounced by 300 ms
+- Search that matches an exact country code or any part of a country name, debounced by 300 ms
 - Page, filters and search are kept in the URL, so a view can be shared and survives a refresh
 - Skeleton loading, an error state with a retry button, an offline banner and an error boundary
 - Layout adapts to screen size with Tailwind breakpoints
@@ -23,6 +23,8 @@ npm install
 npm run dev       # http://localhost:5173
 npm run build     # type-check and production build
 npm run lint
+npm test          # 124 tests
+npm run test:coverage
 ```
 
 ## How it is put together
@@ -31,9 +33,28 @@ npm run lint
 - **URL as shared state.** `useUrlState` keeps the query string and the Recoil state in sync in both directions, and ignores a page-size value that is not one of the allowed options.
 - **Debounced search.** `useDebounce` delays updating the filters while you type, and the input syncs back when filters change from outside (for example from the URL).
 
+## Tests
+
+124 tests in 11 files, using Vitest and React Testing Library, with 97% of statements, 99% of branches and 91% of functions covered. Apollo is replaced by a mocked provider, so the tests run offline and never call the real API.
+
+- **Logic:** the filter, search, pagination and currency selectors, and the debounce hook.
+- **URL sync:** restoring page, page size and filters from a link, falling back from invalid values, and writing state back to the URL.
+- **Components:** every component, queried by role and accessible name, as a user would find them.
+- **Whole app:** loading, error, filtering, searching, paging and opening a shared link, against mocked GraphQL data.
+
+To check that the tests can fail, I broke the app on purpose in 23 ways (for example, an off-by-one page slice, a missing debounce, an unlinked label) and ran the suite each time. 22 were caught. The one that was not does nothing visible, because an invalid page in the URL is corrected when the URL is rewritten.
+
+### What writing the tests found
+
+- **A shared link lost its page.** Opening `?page=3` landed on page 1, so the page number did not survive a refresh. An effect that reset the page whenever filters changed also fired when the URL itself set the filters. The reset now happens only when a person changes a filter.
+- **Controls had no accessible names.** The Continent, Currency, search and page-size labels were not linked to their controls, and the clear, remove-filter and close buttons were unnamed icons.
+- **The pagination text was wrong with no results.** It read "Showing 1 to 0 of 0 entries" and left Next enabled.
+- **Dead code.** Two unused components, an unused `refetch` function, and a word-start search branch that the substring match already covered.
+
 ## Limits and what I would improve
 
-- There are no automated tests. It is checked by the type-checker and linter only, and I have not measured performance or tested it across browsers.
-- Accessibility relies on native elements (table, select, button). The form labels are not yet linked to their controls with `htmlFor`, and there is no extra keyboard handling, which I would fix first.
+- I have not measured performance or tested across browsers.
 - "Retry" reloads the whole page instead of refetching.
-- Search is a substring and word-start match, not a typo-tolerant fuzzy search.
+- Search is a substring and exact-code match, not a typo-tolerant fuzzy search.
+- `src/lib/apollo.ts` (the real network client) is not covered by tests.
+- There is no automated accessibility audit yet. The labels are tested, but I have not run a tool such as axe against the page.
