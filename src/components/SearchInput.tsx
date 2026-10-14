@@ -20,11 +20,13 @@ export const SearchInput: React.FC<SearchInputProps> = ({ className = '' }) => {
     }));
   }, [debouncedSearchTerm, setFilters]);
 
-  // Update local state when filters change externally (e.g., from URL or clear filters)
+  // Sync from external changes only (URL, clear filters). Depending on searchTerm would
+  // reset the text while the user types, because filters.search lags by the debounce.
   useEffect(() => {
     if (filters.search !== searchTerm) {
       setSearchTerm(filters.search || '');
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters.search]);
 
   const handleClear = () => {

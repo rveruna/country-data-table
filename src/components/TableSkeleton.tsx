@@ -1,12 +1,10 @@
 interface TableSkeletonProps {
   rows?: number;
-  columns?: number;
   className?: string;
 }
 
 export const TableSkeleton: React.FC<TableSkeletonProps> = ({ 
   rows = 10, 
-  columns = 4,
   className = ""
 }) => {
   return (
