@@ -15,4 +15,11 @@ module.exports = {
       { allowConstantExport: true },
     ],
   },
+  overrides: [
+    {
+      // Test helpers export components and functions together; fast refresh does not apply to them.
+      files: ['src/test/**', 'src/**/__tests__/**'],
+      rules: { 'react-refresh/only-export-components': 'off' },
+    },
+  ],
 }
