@@ -10,7 +10,7 @@ import { TableSkeleton } from './components/TableSkeleton';
 import { NetworkStatus } from './components/NetworkStatus';
 
 function App() {
-  const { loading, error } = useCountries();
+  const { loading, error, refetch } = useCountries();
   useUrlState(); // Initialize URL state synchronization
 
   if (loading) {
@@ -70,7 +70,7 @@ function App() {
           <ErrorAlert
             title="Failed to load countries"
             message={error}
-            onRetry={() => window.location.reload()}
+            onRetry={() => void refetch()}
             className="mb-6"
           />
           
