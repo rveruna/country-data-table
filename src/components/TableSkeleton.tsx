@@ -8,7 +8,7 @@ export const TableSkeleton: React.FC<TableSkeletonProps> = ({
   className = ""
 }) => {
   return (
-    <div className={`overflow-x-auto ${className}`}>
+    <div aria-hidden="true" className={`overflow-x-auto ${className}`}>
       <table className="min-w-full bg-white border border-gray-200 rounded-lg">
         <thead className="bg-gray-50">
           <tr>
