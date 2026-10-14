@@ -23,7 +23,7 @@ npm install
 npm run dev       # http://localhost:5173
 npm run build     # type-check and production build
 npm run lint
-npm test          # 124 tests
+npm test          # 132 tests
 npm run test:coverage
 ```
 
@@ -35,26 +35,28 @@ npm run test:coverage
 
 ## Tests
 
-124 tests in 11 files, using Vitest and React Testing Library, with 97% of statements, 99% of branches and 91% of functions covered. Apollo is replaced by a mocked provider, so the tests run offline and never call the real API.
+132 tests in 12 files, using Vitest and React Testing Library, with 97% of statements, 99% of branches and 91% of functions covered. Apollo is replaced by a mocked provider, so the tests run offline and never call the real API.
 
 - **Logic:** the filter, search, pagination and currency selectors, and the debounce hook.
 - **URL sync:** restoring page, page size and filters from a link, falling back from invalid values, and writing state back to the URL.
 - **Components:** every component, queried by role and accessible name, as a user would find them.
-- **Whole app:** loading, error, filtering, searching, paging and opening a shared link, against mocked GraphQL data.
+- **Whole app:** loading, error and retry, filtering, searching, paging and opening a shared link, against mocked GraphQL data.
+- **Accessibility:** axe-core runs against the loading, loaded, filtered, empty, later-page, error and error-boundary states. It cannot check colour contrast, because jsdom does not compute styles.
 
-To check that the tests can fail, I broke the app on purpose in 23 ways (for example, an off-by-one page slice, a missing debounce, an unlinked label) and ran the suite each time. 22 were caught. The one that was not does nothing visible, because an invalid page in the URL is corrected when the URL is rewritten.
+To check that the tests can fail, I broke the app on purpose in 27 ways (for example, an off-by-one page slice, a missing debounce, an unlinked label, a reintroduced heading skip) and ran the suite each time. 26 were caught. The one that was not does nothing visible, because an invalid page in the URL is corrected when the URL is rewritten.
 
 ### What writing the tests found
 
 - **A shared link lost its page.** Opening `?page=3` landed on page 1, so the page number did not survive a refresh. An effect that reset the page whenever filters changed also fired when the URL itself set the filters. The reset now happens only when a person changes a filter.
 - **Controls had no accessible names.** The Continent, Currency, search and page-size labels were not linked to their controls, and the clear, remove-filter and close buttons were unnamed icons.
 - **The pagination text was wrong with no results.** It read "Showing 1 to 0 of 0 entries" and left Next enabled.
+- **axe-core found two more.** The loading skeleton exposed empty table headers to screen readers, and the error alert's heading jumped from an h1 to an h3. Both are fixed.
+- **"Try Again" reloaded the whole page,** discarding the filters. It now requests the countries again.
 - **Dead code.** Two unused components, an unused `refetch` function, and a word-start search branch that the substring match already covered.
 
 ## Limits and what I would improve
 
 - I have not measured performance or tested across browsers.
-- "Retry" reloads the whole page instead of refetching.
 - Search is a substring and exact-code match, not a typo-tolerant fuzzy search.
 - `src/lib/apollo.ts` (the real network client) is not covered by tests.
-- There is no automated accessibility audit yet. The labels are tested, but I have not run a tool such as axe against the page.
+- Accessibility is checked with axe-core in jsdom, which cannot judge colour contrast or real screen reader behaviour. I would add a browser-based audit and test with a screen reader by hand.
