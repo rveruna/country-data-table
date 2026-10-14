@@ -5,13 +5,12 @@ import { Pagination } from './components/Pagination';
 import { TableHeader } from './components/TableHeader';
 import { FilterControls } from './components/FilterControls';
 import { ErrorBoundary } from './components/ErrorBoundary';
-import { LoadingState } from './components/LoadingState';
 import { ErrorAlert } from './components/ErrorAlert';
 import { TableSkeleton } from './components/TableSkeleton';
 import { NetworkStatus } from './components/NetworkStatus';
 
 function App() {
-  const { countries, loading, error, refetch } = useCountries();
+  const { loading, error } = useCountries();
   useUrlState(); // Initialize URL state synchronization
 
   if (loading) {

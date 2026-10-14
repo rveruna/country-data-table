@@ -1,5 +1,5 @@
 import { useQuery } from '@apollo/client';
-import { useRecoilState, useSetRecoilState } from 'recoil';
+import { useRecoilState } from 'recoil';
 import { useEffect } from 'react';
 import { GET_COUNTRIES } from '../graphql/queries';
 import { CountriesData } from '../types/country';

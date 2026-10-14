@@ -48,7 +48,7 @@ export const useUrlState = () => {
     const newLimit = limitParam ? parseInt(limitParam, 10) : 10;
     
     // Validate limit is one of the allowed options
-    const validLimit = PAGINATION_OPTIONS.includes(newLimit as any) ? newLimit : 10;
+    const validLimit = (PAGINATION_OPTIONS as readonly number[]).includes(newLimit) ? newLimit : 10;
     
     setPagination(prev => ({
       ...prev,
