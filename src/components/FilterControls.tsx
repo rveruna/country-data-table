@@ -1,28 +1,30 @@
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilValue } from 'recoil';
 import { filtersState, uniqueCurrenciesSelector } from '../store/countryStore';
 import { FilterDropdown } from './FilterDropdown';
 import { SearchInput } from './SearchInput';
 import { SearchResults } from './SearchResults';
 import { CONTINENTS } from '../utils/constants';
+import { useFilterActions } from '../hooks/useFilterActions';
 
 interface FilterControlsProps {
   className?: string;
 }
 
 export const FilterControls: React.FC<FilterControlsProps> = ({ className = '' }) => {
-  const [filters, setFilters] = useRecoilState(filtersState);
+  const filters = useRecoilValue(filtersState);
+  const updateFilters = useFilterActions();
   const uniqueCurrencies = useRecoilValue(uniqueCurrenciesSelector);
 
   const handleContinentChange = (continent: string | undefined) => {
-    setFilters(prev => ({ ...prev, continent }));
+    updateFilters(prev => ({ ...prev, continent }));
   };
 
   const handleCurrencyChange = (currency: string | undefined) => {
-    setFilters(prev => ({ ...prev, currency }));
+    updateFilters(prev => ({ ...prev, currency }));
   };
 
   const clearFilters = () => {
-    setFilters({
+    updateFilters({
       continent: undefined,
       currency: undefined,
       search: undefined,
@@ -106,7 +108,7 @@ export const FilterControls: React.FC<FilterControlsProps> = ({ className = '' }
                 <span className="hidden sm:inline">Search: </span>
                 <span className="max-w-24 sm:max-w-none truncate">{filters.search}</span>
                 <button
-                  onClick={() => setFilters(prev => ({ ...prev, search: undefined }))}
+                  onClick={() => updateFilters(prev => ({ ...prev, search: undefined }))}
                   className="ml-1 text-purple-600 hover:text-purple-800"
                 >
                   ×
