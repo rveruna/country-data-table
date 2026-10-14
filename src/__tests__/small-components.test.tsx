@@ -212,6 +212,11 @@ describe('TableHeader', () => {
 });
 
 describe('TableSkeleton', () => {
+  it('is hidden from assistive technology, because it is only a placeholder', () => {
+    const { container } = render(<TableSkeleton />);
+    expect(container.firstElementChild).toHaveAttribute('aria-hidden', 'true');
+  });
+
   it('draws ten placeholder rows by default', () => {
     const { container } = render(<TableSkeleton />);
     expect(container.querySelectorAll('tbody tr')).toHaveLength(10);

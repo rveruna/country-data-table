@@ -15,7 +15,7 @@ const loaded = () => screen.findByText('United States');
 describe('App: loading and errors', () => {
   it('shows placeholders while the countries load, then the table', async () => {
     renderApp();
-    expect(screen.getByText('Loading country information...')).toBeInTheDocument();
+    expect(screen.getByRole('status')).toHaveTextContent('Loading country information...');
 
     await loaded();
     expect(screen.queryByText('Loading country information...')).not.toBeInTheDocument();

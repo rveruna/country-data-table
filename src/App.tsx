@@ -25,7 +25,7 @@ function App() {
             <div className="flex justify-between items-center">
               <div>
                 <h2 className="text-xl font-semibold text-gray-800">Country Directory</h2>
-                <p className="text-sm text-gray-600 mt-1">Loading country information...</p>
+                <p role="status" className="text-sm text-gray-600 mt-1">Loading country information...</p>
               </div>
               <div className="text-right">
                 <div className="animate-pulse bg-gray-200 rounded h-8 w-16 mb-2"></div>
