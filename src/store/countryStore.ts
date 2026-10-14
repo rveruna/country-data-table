@@ -52,14 +52,8 @@ export const filteredCountriesSelector = selector({
         // Exact match for country code
         if (countryCode === searchTerm) return true;
         
-        // Fuzzy/similarity search for country name
-        if (countryName.includes(searchTerm)) return true;
-        
-        // Check if search term matches start of any word in country name
-        const nameWords = countryName.split(' ');
-        if (nameWords.some(word => word.startsWith(searchTerm))) return true;
-        
-        return false;
+        // Any part of the name, which also covers the start of any word in it
+        return countryName.includes(searchTerm);
       })();
 
       return matchesContinent && matchesCurrency && matchesSearch;
