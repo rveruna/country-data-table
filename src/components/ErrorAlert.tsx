@@ -49,6 +49,7 @@ export const ErrorAlert: React.FC<ErrorAlertProps> = ({
           <div className="ml-auto pl-3">
             <button
               onClick={onDismiss}
+              aria-label="Close"
               className="text-red-400 hover:text-red-600 transition-colors"
             >
               <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

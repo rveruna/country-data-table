@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useId } from 'react';
 import { useRecoilValue } from 'recoil';
 import { filtersState } from '../store/countryStore';
 import { useDebounce } from '../hooks/useDebounce';
@@ -11,6 +11,7 @@ interface SearchInputProps {
 export const SearchInput: React.FC<SearchInputProps> = ({ className = '' }) => {
   const filters = useRecoilValue(filtersState);
   const updateFilters = useFilterActions();
+  const inputId = useId();
   const [searchTerm, setSearchTerm] = useState(filters.search || '');
   const debouncedSearchTerm = useDebounce(searchTerm, 300);
 
@@ -37,7 +38,7 @@ export const SearchInput: React.FC<SearchInputProps> = ({ className = '' }) => {
 
   return (
     <div className={`flex flex-col gap-1 ${className}`}>
-      <label className="text-sm font-medium text-gray-700">Search Countries</label>
+      <label htmlFor={inputId} className="text-sm font-medium text-gray-700">Search Countries</label>
       <div className="relative">
         <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
           <svg 
@@ -55,6 +56,7 @@ export const SearchInput: React.FC<SearchInputProps> = ({ className = '' }) => {
           </svg>
         </div>
         <input
+          id={inputId}
           type="text"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
@@ -64,6 +66,7 @@ export const SearchInput: React.FC<SearchInputProps> = ({ className = '' }) => {
         {searchTerm && (
           <button
             onClick={handleClear}
+            aria-label="Clear search"
             className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
           >
             <svg 
