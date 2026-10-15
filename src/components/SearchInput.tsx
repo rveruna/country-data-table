@@ -1,4 +1,4 @@
-import { useState, useEffect, useId } from 'react';
+import { useState, useEffect, useId, memo } from 'react';
 import { useRecoilValue } from 'recoil';
 import { filtersState } from '../store/countryStore';
 import { useDebounce } from '../hooks/useDebounce';
@@ -8,7 +8,7 @@ interface SearchInputProps {
   className?: string;
 }
 
-export const SearchInput: React.FC<SearchInputProps> = ({ className = '' }) => {
+const SearchInputBase: React.FC<SearchInputProps> = ({ className = '' }) => {
   const filters = useRecoilValue(filtersState);
   const updateFilters = useFilterActions();
   const inputId = useId();
@@ -91,3 +91,6 @@ export const SearchInput: React.FC<SearchInputProps> = ({ className = '' }) => {
     </div>
   );
 };
+
+export const SearchInput = memo(SearchInputBase);
+SearchInput.displayName = 'SearchInput';

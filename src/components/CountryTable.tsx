@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { useRecoilValue } from 'recoil';
 import { paginatedCountriesSelector } from '../store/countryStore';
 import { Country } from '../types/country';
@@ -6,7 +7,7 @@ interface CountryTableProps {
   className?: string;
 }
 
-export const CountryTable: React.FC<CountryTableProps> = ({ className = '' }) => {
+const CountryTableBase: React.FC<CountryTableProps> = ({ className = '' }) => {
   const paginatedCountries = useRecoilValue(paginatedCountriesSelector);
 
   return (
@@ -69,3 +70,6 @@ export const CountryTable: React.FC<CountryTableProps> = ({ className = '' }) =>
     </div>
   );
 };
+
+export const CountryTable = memo(CountryTableBase);
+CountryTable.displayName = 'CountryTable';
