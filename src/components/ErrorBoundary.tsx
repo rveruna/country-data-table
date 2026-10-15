@@ -56,13 +56,13 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
             <div className="space-y-3">
               <button
                 onClick={this.resetError}
-                className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition-colors"
+                className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-sm transition-colors"
               >
                 Try Again
               </button>
               <button
                 onClick={() => window.location.reload()}
-                className="w-full bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded transition-colors"
+                className="w-full bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-sm transition-colors"
               >
                 Refresh Page
               </button>
@@ -70,7 +70,7 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
             {this.state.error && (
               <details className="mt-4 text-left">
                 <summary className="text-sm text-gray-500 cursor-pointer">Technical Details</summary>
-                <pre className="mt-2 text-xs text-gray-700 bg-gray-100 p-2 rounded overflow-auto">
+                <pre className="mt-2 text-xs text-gray-700 bg-gray-100 p-2 rounded-sm overflow-auto">
                   {this.state.error.message}
                 </pre>
               </details>
