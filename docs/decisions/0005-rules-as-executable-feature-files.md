@@ -28,7 +28,9 @@ A rule the code does not meet yet is tagged `@known-bug` and reported as skipped
 - The rules can fail: breaking the search, the exact-code match, the page slice, the debounce or the URL sync on
   purpose each failed at least one scenario.
 - Writing them found one bug: a link with a page size that is not offered, such as `?limit=7`, shows 10 rows but
-  keeps `limit=7` in the address, against [0003](0003-one-directional-url-sync.md). It is tagged `@known-bug`.
-- Vitest counts each step as a test, so its total (357) is larger than the number of scenarios (59).
+  keeps `limit=7` in the address, against [0003](0003-one-directional-url-sync.md). The value fell back to its
+  default, the state did not change, so nothing rewrote the address. It is fixed: reading the URL now cleans it
+  too, and the scenarios that were tagged `@known-bug` run.
+- Vitest counts each step as a test, so its total (363) is larger than the number of scenarios (59).
 - There is one more development dependency and a 90-line runner of our own to maintain. Neither reaches the
   bundle.
