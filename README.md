@@ -5,9 +5,9 @@
 
 **[Live demo](https://rveruna.github.io/country-data-table/)**, which uses the real Countries API. Try [Europe, searching for "ger"](https://rveruna.github.io/country-data-table/?continent=Europe&search=ger): the URL is the state, so any view can be shared.
 
-A responsive table of the world's countries with filtering, search, pagination and shareable URLs. Built with React, TypeScript, Recoil and Tailwind CSS, with a small `fetch`-based GraphQL client. It scores **100 on all four Lighthouse categories** (performance, accessibility, best practices and SEO, on simulated mobile) and ships 86 kB of JavaScript gzipped; see [docs/performance.md](docs/performance.md) for how that was measured.
+[![Choosing Europe narrows 250 countries to 53, paging to page 2, then typing "land" filters the table to 8 countries as you type](docs/demo.gif)](https://rveruna.github.io/country-data-table/)
 
-<p align="center"><img src="./demo.gif" alt="Demo: filtering, searching and paging the country table" width="800" /></p>
+A responsive table of the world's countries with filtering, search, pagination and shareable URLs. Built with React, TypeScript, Recoil and Tailwind CSS, with a small `fetch`-based GraphQL client. It scores **100 on all four Lighthouse categories** (performance, accessibility, best practices and SEO, on simulated mobile) and ships 86 kB of JavaScript gzipped; see [docs/performance.md](docs/performance.md) for how that was measured.
 
 Data comes from the public [Countries GraphQL API](https://countries.trevorblades.com/).
 
