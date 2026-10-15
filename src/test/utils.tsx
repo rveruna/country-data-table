@@ -2,15 +2,15 @@ import type { ReactElement } from 'react';
 import { render } from '@testing-library/react';
 import { MemoryRouter, useLocation } from 'react-router-dom';
 import { RecoilRoot, type MutableSnapshot } from 'recoil';
-import { MockedProvider, type MockedResponse } from '@apollo/client/testing';
-import { GET_COUNTRIES } from '../graphql/queries';
+import { vi } from 'vitest';
 import type { Country } from '../types/country';
 import { countriesState } from '../store/countryStore';
 
 interface Options {
   route?: string;
   initializeState?: (snapshot: MutableSnapshot) => void;
-  mocks?: MockedResponse[];
+  /** Responses for successive fetch calls. When given, fetch is stubbed and a call beyond the list throws. */
+  mocks?: MockResponse[];
 }
 
 /** Shows the current URL query string so tests can assert on it. */
@@ -20,14 +20,13 @@ export function LocationDisplay() {
 }
 
 export function renderWithProviders(ui: ReactElement, { route = '/', initializeState, mocks = [] }: Options = {}) {
+  if (mocks.length > 0) stubFetch(mocks);
   return render(
     <MemoryRouter initialEntries={[route]}>
-      <MockedProvider mocks={mocks} addTypename={false}>
-        <RecoilRoot initializeState={initializeState}>
-          {ui}
-          <LocationDisplay />
-        </RecoilRoot>
-      </MockedProvider>
+      <RecoilRoot initializeState={initializeState}>
+        {ui}
+        <LocationDisplay />
+      </RecoilRoot>
     </MemoryRouter>,
   );
 }
@@ -37,12 +36,21 @@ export const withCountries = (list: Country[]) => (snapshot: MutableSnapshot) =>
   snapshot.set(countriesState, list);
 };
 
-export const countriesQueryMock = (list: Country[]): MockedResponse => ({
-  request: { query: GET_COUNTRIES },
-  result: { data: { countries: list } },
-});
+export type MockResponse = { kind: 'data'; countries: Country[] } | { kind: 'error'; message: string };
 
-export const countriesErrorMock = (message: string): MockedResponse => ({
-  request: { query: GET_COUNTRIES },
-  error: new Error(message),
-});
+export const countriesQueryMock = (list: Country[]): MockResponse => ({ kind: 'data', countries: list });
+
+export const countriesErrorMock = (message: string): MockResponse => ({ kind: 'error', message });
+
+/** Replaces fetch with a stub that answers each call from the list in order, and returns the stub. */
+export function stubFetch(mocks: MockResponse[]) {
+  let call = 0;
+  const fetchMock = vi.fn(async () => {
+    const mock = mocks[call++];
+    if (!mock) throw new Error('Unexpected extra fetch call');
+    if (mock.kind === 'error') throw new Error(mock.message);
+    return new Response(JSON.stringify({ data: { countries: mock.countries } }), { status: 200 });
+  });
+  vi.stubGlobal('fetch', fetchMock);
+  return fetchMock;
+}

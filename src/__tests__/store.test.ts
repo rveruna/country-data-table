@@ -4,6 +4,7 @@ import {
   countriesState,
   filteredCountriesSelector,
   filtersState,
+  loadingState,
   paginatedCountriesSelector,
   paginationState,
   uniqueCurrenciesSelector,
@@ -140,5 +141,11 @@ describe('uniqueCurrenciesSelector', () => {
       s.set(countriesState, [{ name: 'X', code: 'XX', continent: { name: 'Asia' }, currency: 'AAA, BBB' }]),
     );
     expect(result).toEqual(['AAA', 'BBB']);
+  });
+});
+
+describe('initial state', () => {
+  it('starts out loading, so the first paint is the placeholder and not an empty table', () => {
+    expect(read(loadingState, () => {})).toBe(true);
   });
 });

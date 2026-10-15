@@ -1,49 +1,36 @@
-import { useQuery } from '@apollo/client';
-import { useRecoilState } from 'recoil';
-import { useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import { useRecoilState, useSetRecoilState } from 'recoil';
 import { GET_COUNTRIES } from '../graphql/queries';
+import { graphqlRequest } from '../lib/graphql';
 import { CountriesData } from '../types/country';
-import { 
-  countriesState, 
-  loadingState, 
-  errorState,
-} from '../store/countryStore';
+import { countriesState, errorState, loadingState } from '../store/countryStore';
 
+/** Loads the countries once, and again whenever `refetch` is called. */
 export const useCountries = () => {
-  const [countries, setCountries] = useRecoilState(countriesState);
+  const setCountries = useSetRecoilState(countriesState);
   const [loading, setLoading] = useRecoilState(loadingState);
   const [error, setError] = useRecoilState(errorState);
-
-  const { data, loading: queryLoading, error: queryError, refetch } = useQuery<CountriesData>(
-    GET_COUNTRIES,
-    {
-      errorPolicy: 'all',
-      notifyOnNetworkStatusChange: true,
-    }
-  );
+  const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
-    setLoading(queryLoading);
-  }, [queryLoading, setLoading]);
+    const controller = new AbortController();
+    setLoading(true);
+    setError(null);
 
-  useEffect(() => {
-    if (queryError) {
-      setError(queryError.message);
-    } else {
-      setError(null);
-    }
-  }, [queryError, setError]);
+    graphqlRequest<CountriesData>(GET_COUNTRIES, { signal: controller.signal })
+      .then((data) => setCountries(data.countries))
+      .catch((e: unknown) => {
+        if (!controller.signal.aborted) setError(e instanceof Error ? e.message : 'Something went wrong');
+      })
+      .finally(() => {
+        if (!controller.signal.aborted) setLoading(false);
+      });
 
-  useEffect(() => {
-    if (data?.countries) {
-      setCountries(data.countries);
-    }
-  }, [data, setCountries]);
+    // Leaving the page, or retrying, cancels the request that is still in flight
+    return () => controller.abort();
+  }, [attempt, setCountries, setError, setLoading]);
 
-  return {
-    countries,
-    loading,
-    error,
-    refetch,
-  };
+  const refetch = useCallback(() => setAttempt((n) => n + 1), []);
+
+  return { loading, error, refetch };
 };
