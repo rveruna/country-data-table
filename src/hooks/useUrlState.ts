@@ -69,5 +69,10 @@ export const useUrlState = () => {
         ? prev
         : { continent, currency, search },
     );
-  }, [urlQuery, setPagination, setFilters]);
+
+    // A value that was not valid falls back to its default, which may leave the state unchanged, so the
+    // state-to-URL effect would never run. Clean the address here instead.
+    const cleaned = toQuery({ page, limit }, { continent, currency, search });
+    if (cleaned !== urlQuery) setSearchParams(new URLSearchParams(cleaned), { replace: true });
+  }, [urlQuery, setPagination, setFilters, setSearchParams]);
 };
