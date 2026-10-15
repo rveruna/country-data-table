@@ -1,6 +1,11 @@
 # Country Data Table
 
-A responsive table of the world's countries with filtering, search, pagination and shareable URLs. Built with React, TypeScript, Recoil and Tailwind CSS, with a small `fetch`-based GraphQL client. It scores **100 on Lighthouse** (simulated mobile) and ships 86 kB of JavaScript gzipped; see [docs/performance.md](docs/performance.md) for how that was measured.
+[![CI](https://github.com/rveruna/country-data-table/actions/workflows/ci.yml/badge.svg)](https://github.com/rveruna/country-data-table/actions/workflows/ci.yml)
+[![CodeQL](https://github.com/rveruna/country-data-table/actions/workflows/codeql.yml/badge.svg)](https://github.com/rveruna/country-data-table/actions/workflows/codeql.yml)
+
+**[Live demo](https://rveruna.github.io/country-data-table/)**, which uses the real Countries API. Try [Europe, searching for "ger"](https://rveruna.github.io/country-data-table/?continent=Europe&search=ger): the URL is the state, so any view can be shared.
+
+A responsive table of the world's countries with filtering, search, pagination and shareable URLs. Built with React, TypeScript, Recoil and Tailwind CSS, with a small `fetch`-based GraphQL client. It scores **100 on all four Lighthouse categories** (performance, accessibility, best practices and SEO, on simulated mobile) and ships 86 kB of JavaScript gzipped; see [docs/performance.md](docs/performance.md) for how that was measured.
 
 <p align="center"><img src="./demo.gif" alt="Demo: filtering, searching and paging the country table" width="800" /></p>
 
@@ -23,7 +28,8 @@ npm install
 npm run dev       # http://localhost:5173
 npm run build     # type-check and production build
 npm run lint
-npm test          # 149 tests
+npm run format    # Prettier
+npm test          # 152 tests
 npm run test:coverage
 npm run size      # bundle size budget (after a build)
 npm run perf:lighthouse   # Lighthouse, five runs in real Chrome
@@ -41,9 +47,17 @@ npm run perf:scale        # interaction time with 250 to 25,000 countries
 
 Measured, not assumed. The app was already fast, so the gains are modest but real. Choosing a continent now renders the header, table and pagination once instead of five times, and replacing Apollo Client (45% of the bundle, for one query) with a `fetch` client cut JavaScript from 142.7 kB to 86.1 kB gzipped and first paint by 300 ms. With 25,000 countries, load time fell from 1.3 s to 0.2 s and filtering from 21 ms to 9 ms on a 4x slowed CPU. The page still renders only 10 rows, so list virtualisation was measured and judged unnecessary. [docs/performance.md](docs/performance.md) has the method, every number and the mistakes I made on the way. CI fails if the bundle passes its budget, the Lighthouse score drops below 90, or the render budget tests fail.
 
+## Practices
+
+- **CI on every push:** lint, a Prettier check, an audit of production dependencies (high severity and above), the type-check and build, the tests with coverage, a bundle size budget, and Lighthouse (performance at least 90, accessibility, best practices and SEO at least 95).
+- **Before every commit:** a Husky hook formats and lints the staged files.
+- **Kept current and watched:** Dependabot groups weekly updates, and CodeQL scans every push.
+- **Decisions are written down:** [docs/decisions](docs/decisions) records the choices that were not obvious, with their evidence, including [how accessibility is checked at four levels and what each one misses](docs/decisions/0004-how-accessibility-is-checked.md).
+- **Deployed from CI:** pushes to `main` publish the demo to GitHub Pages.
+
 ## Tests
 
-149 tests in 15 files, using Vitest and React Testing Library, with 100% of statements and lines, 99.5% of branches and 94% of functions covered. `fetch` is stubbed, so the tests run offline and never call the real API.
+152 tests in 15 files, using Vitest and React Testing Library, with 100% of statements and lines, 99.5% of branches and 94% of functions covered. `fetch` is stubbed, so the tests run offline and never call the real API.
 
 - **Logic:** the filter, search, pagination and currency selectors, the debounce hook, and the data hook and GraphQL client (success, errors, retry, and cancelling a request in flight).
 - **URL sync:** restoring page, page size and filters from a link, falling back from invalid values, and writing state back to the URL.
@@ -59,6 +73,8 @@ To check that the tests can fail, I broke the app on purpose in 37 ways (for exa
 - **Controls had no accessible names.** The Continent, Currency, search and page-size labels were not linked to their controls, and the clear, remove-filter and close buttons were unnamed icons.
 - **The pagination text was wrong with no results.** It read "Showing 1 to 0 of 0 entries" and left Next enabled.
 - **axe-core found two more.** The loading skeleton exposed empty table headers to screen readers, and the error alert's heading jumped from an h1 to an h3. Both are fixed.
+- **Lighthouse found what the tests could not.** With axe passing in jsdom, Lighthouse in a real browser scored accessibility 90 and SEO 82: faint grey text, no `main` landmark, no meta description and an invalid `robots.txt`. All fixed, and CI now fails below 95.
+- **A dependency had known vulnerabilities.** `npm audit` reported 2 high-severity issues in `react-router`; upgrading fixed them, and CI now audits production dependencies.
 - **"Try Again" reloaded the whole page,** discarding the filters. It now requests the countries again.
 - **Dead code.** Two unused components, an unused `refetch` function, two unused GraphQL queries, an unused dependency (`formik`), and a word-start search branch that the substring match already covered.
 
@@ -66,5 +82,5 @@ To check that the tests can fail, I broke the app on purpose in 37 ways (for exa
 
 - Performance is measured on one machine with simulated throttling, not on real devices, and I have not tested across browsers.
 - Search is a substring and exact-code match, not a typo-tolerant fuzzy search.
-- Accessibility is checked with axe-core in jsdom, which cannot judge colour contrast or real screen reader behaviour. I would add a browser-based audit and test with a screen reader by hand.
+- Accessibility is checked by lint, by tests (including axe-core in jsdom) and by Lighthouse in Chrome in CI, but I have not tested with a real screen reader. [The decision record](docs/decisions/0004-how-accessibility-is-checked.md) lists what each check misses.
 - The project no longer uses Apollo Client. That was a deliberate trade for the performance gain, since the app makes one query; an app with many related queries would benefit from a cache.
