@@ -9,7 +9,7 @@
 
 Want the longer version? [Watch the full one-minute walkthrough](demo.gif) (a 20 MB GIF).
 
-A responsive table of the world's countries with filtering, search, pagination and shareable URLs. Built with React, TypeScript, Recoil and Tailwind CSS, with a small `fetch`-based GraphQL client. It scores **100 on all four Lighthouse categories** (performance, accessibility, best practices and SEO, on simulated mobile) and ships 86 kB of JavaScript gzipped; see [docs/performance.md](docs/performance.md) for how that was measured.
+A responsive table of the world's countries with filtering, search, pagination and shareable URLs. Built with React, TypeScript, Recoil and Tailwind CSS, with a small `fetch`-based GraphQL client. It scores **100 on all four Lighthouse categories** (performance, accessibility, best practices and SEO, on simulated mobile) and ships 87 kB of JavaScript gzipped; see [docs/performance.md](docs/performance.md) for how that was measured.
 
 Data comes from the public [Countries GraphQL API](https://countries.trevorblades.com/).
 
@@ -47,13 +47,13 @@ npm run perf:scale        # interaction time with 250 to 25,000 countries
 
 ## Performance
 
-Measured, not assumed. The app was already fast, so the gains are modest but real. Choosing a continent now renders the header, table and pagination once instead of five times, and replacing Apollo Client (45% of the bundle, for one query) with a `fetch` client cut JavaScript from 142.7 kB to 86.1 kB gzipped and first paint by 300 ms. With 25,000 countries, load time fell from 1.3 s to 0.2 s and filtering from 21 ms to 9 ms on a 4x slowed CPU. The page still renders only 10 rows, so list virtualisation was measured and judged unnecessary. [docs/performance.md](docs/performance.md) has the method, every number and the mistakes I made on the way. CI fails if the bundle passes its budget, the Lighthouse score drops below 90, or the render budget tests fail.
+Measured, not assumed. The app was already fast, so the gains are modest but real. Choosing a continent now renders the header, table and pagination once instead of five times, and replacing Apollo Client (45% of the bundle, for one query) with a `fetch` client cut JavaScript from 142.7 kB to 86.1 kB gzipped and first paint by 300 ms. With 25,000 countries, load time fell from 1.3 s to 0.2 s and filtering from 21 ms to 9 ms on a 4x slowed CPU. The page still renders only 10 rows, so list virtualisation was measured and judged unnecessary. [docs/performance.md](docs/performance.md) has the method, every number and the mistakes I made on the way. CI fails if the bundle passes its budget, the Lighthouse performance score drops below 90 (or accessibility, best practices or SEO below 95), or the render budget tests fail.
 
 ## Practices
 
-- **CI on every push:** lint, a Prettier check, an audit of production dependencies (high severity and above), the type-check and build, the tests with coverage, a bundle size budget, and Lighthouse (performance at least 90, accessibility, best practices and SEO at least 95).
+- **CI on every push to main and every pull request:** lint, a Prettier check, an audit of production dependencies (high severity and above), the type-check and build, the tests with coverage, a bundle size budget, and Lighthouse (performance at least 90, accessibility, best practices and SEO at least 95).
 - **Before every commit:** a Husky hook formats and lints the staged files.
-- **Kept current and watched:** Dependabot groups weekly updates, and CodeQL scans every push.
+- **Kept current and watched:** Dependabot groups weekly updates, and CodeQL scans every push to main, every pull request and weekly.
 - **Decisions are written down:** [docs/decisions](docs/decisions) records the choices that were not obvious, with their evidence, including [how accessibility is checked at four levels and what each one misses](docs/decisions/0004-how-accessibility-is-checked.md).
 - **Deployed from CI:** pushes to `main` publish the demo to GitHub Pages.
 
