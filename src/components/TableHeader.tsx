@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { useRecoilValue } from 'recoil';
 import { filteredCountriesSelector } from '../store/countryStore';
 
@@ -5,7 +6,7 @@ interface TableHeaderProps {
   className?: string;
 }
 
-export const TableHeader: React.FC<TableHeaderProps> = ({ className = '' }) => {
+const TableHeaderBase: React.FC<TableHeaderProps> = ({ className = '' }) => {
   const filteredCountries = useRecoilValue(filteredCountriesSelector);
 
   return (
@@ -29,3 +30,6 @@ export const TableHeader: React.FC<TableHeaderProps> = ({ className = '' }) => {
     </div>
   );
 };
+
+export const TableHeader = memo(TableHeaderBase);
+TableHeader.displayName = 'TableHeader';

@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { useRecoilValue } from 'recoil';
 import { filtersState, filteredCountriesSelector, countriesState } from '../store/countryStore';
 
@@ -5,7 +6,7 @@ interface SearchResultsProps {
   className?: string;
 }
 
-export const SearchResults: React.FC<SearchResultsProps> = ({ className = '' }) => {
+const SearchResultsBase: React.FC<SearchResultsProps> = ({ className = '' }) => {
   const filters = useRecoilValue(filtersState);
   const filteredCountries = useRecoilValue(filteredCountriesSelector);
   const allCountries = useRecoilValue(countriesState);
@@ -55,3 +56,6 @@ export const SearchResults: React.FC<SearchResultsProps> = ({ className = '' }) 
     </div>
   );
 };
+
+export const SearchResults = memo(SearchResultsBase);
+SearchResults.displayName = 'SearchResults';

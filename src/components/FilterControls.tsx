@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { useRecoilValue } from 'recoil';
 import { filtersState, uniqueCurrenciesSelector } from '../store/countryStore';
 import { FilterDropdown } from './FilterDropdown';
@@ -10,7 +11,7 @@ interface FilterControlsProps {
   className?: string;
 }
 
-export const FilterControls: React.FC<FilterControlsProps> = ({ className = '' }) => {
+const FilterControlsBase: React.FC<FilterControlsProps> = ({ className = '' }) => {
   const filters = useRecoilValue(filtersState);
   const updateFilters = useFilterActions();
   const uniqueCurrencies = useRecoilValue(uniqueCurrenciesSelector);
@@ -124,3 +125,6 @@ export const FilterControls: React.FC<FilterControlsProps> = ({ className = '' }
     </div>
   );
 };
+
+export const FilterControls = memo(FilterControlsBase);
+FilterControls.displayName = 'FilterControls';

@@ -1,4 +1,4 @@
-import { useEffect, useId } from 'react';
+import { useEffect, useId, memo } from 'react';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { paginationState, paginationInfoSelector } from '../store/countryStore';
 import { PAGINATION_OPTIONS } from '../utils/constants';
@@ -7,7 +7,7 @@ interface PaginationProps {
   className?: string;
 }
 
-export const Pagination: React.FC<PaginationProps> = ({ className = '' }) => {
+const PaginationBase: React.FC<PaginationProps> = ({ className = '' }) => {
   const pagination = useRecoilValue(paginationInfoSelector);
   const setPagination = useSetRecoilState(paginationState);
   const pageSizeId = useId();
@@ -133,3 +133,6 @@ export const Pagination: React.FC<PaginationProps> = ({ className = '' }) => {
     </div>
   );
 };
+
+export const Pagination = memo(PaginationBase);
+Pagination.displayName = 'Pagination';
