@@ -88,7 +88,7 @@ What the table promises is written down as plain-English rules in Gherkin featur
 - [Paging](src/features/paging.feature): the page sizes, a last page with fewer rows, and paging a filtered list
 - [Shared links](src/features/shared-links.feature): restoring a view from a link, falling back from values that are not valid, and surviving a refresh
 
-The steps call the filtering and paging selectors directly, with no browser and no network. The 300 ms wait and the URL sync live in a component and a hook, so those steps render them on their own. A failing rule means the code is wrong, so a rule is never edited to make a build pass. A rule the code does not meet yet is tagged `@known-bug` and shows as skipped; today there is one, a link with `?limit=7` keeps it in the address. [Decision 0005](docs/decisions/0005-rules-as-executable-feature-files.md) explains the approach.
+The steps call the filtering and paging selectors directly, with no browser and no network. The 300 ms wait and the URL sync live in a component and a hook, so those steps render them on their own. A failing rule means the code is wrong, so a rule is never edited to make a build pass. A rule the code does not meet yet is tagged `@known-bug` and shows as skipped; there are none today. [Decision 0005](docs/decisions/0005-rules-as-executable-feature-files.md) explains the approach.
 
 **To add a scenario,** add a row to an `Examples` table, or a new scenario, in the `.feature` file. If it reuses existing steps, that is all. A new step needs one `define` in the `.steps.ts` file next to it.
 

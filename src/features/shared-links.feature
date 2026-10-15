@@ -35,9 +35,7 @@ Feature: Shared links
         | /?page=abc       | 1    | 10   |
         | /?page=2&limit=7 | 2    | 10   |
 
-    # Promised in docs/decisions/0003. Today the address keeps a value that is not valid
-    # unless something else in the view changes, as it does in the last row.
-    @known-bug
+    # Promised in docs/decisions/0003.
     Scenario Outline: The address drops a value that is not valid
       When I open the link "<link>"
       Then the address is "<address>"
