@@ -1,5 +1,5 @@
 import { useCountries } from './hooks/useCountries';
-import { useUrlState } from './hooks/useUrlState';
+import { UrlStateSync } from './components/UrlStateSync';
 import { CountryTable } from './components/CountryTable';
 import { Pagination } from './components/Pagination';
 import { TableHeader } from './components/TableHeader';
@@ -11,10 +11,11 @@ import { NetworkStatus } from './components/NetworkStatus';
 
 function App() {
   const { loading, error, refetch } = useCountries();
-  useUrlState(); // Initialize URL state synchronization
 
   if (loading) {
     return (
+      <>
+      <UrlStateSync />
       <div className="min-h-screen bg-gray-100 py-8">
         <div className="max-w-7xl mx-auto px-4">
           <h1 className="text-4xl font-bold text-gray-800 mb-8 text-center">
@@ -56,11 +57,14 @@ function App() {
           </div>
         </div>
       </div>
+      </>
     );
   }
 
   if (error) {
     return (
+      <>
+      <UrlStateSync />
       <div className="min-h-screen bg-gray-100 py-8">
         <div className="max-w-7xl mx-auto px-4">
           <h1 className="text-4xl font-bold text-gray-800 mb-8 text-center">
@@ -85,11 +89,13 @@ function App() {
           </div>
         </div>
       </div>
+      </>
     );
   }
 
   return (
     <ErrorBoundary>
+      <UrlStateSync />
       <NetworkStatus />
       <div className="min-h-screen bg-gray-100 py-4 px-2 sm:py-8 sm:px-4">
         <div className="max-w-7xl mx-auto">
