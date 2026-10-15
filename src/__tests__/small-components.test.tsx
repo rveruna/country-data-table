@@ -6,7 +6,7 @@ import { ErrorBoundary } from '../components/ErrorBoundary';
 import { NetworkStatus } from '../components/NetworkStatus';
 import { TableHeader } from '../components/TableHeader';
 import { TableSkeleton } from '../components/TableSkeleton';
-import { countriesState } from '../store/countryStore';
+import { countriesAtom } from '../store/countryStore';
 import { countries } from '../test/fixtures';
 import { renderWithProviders } from '../test/utils';
 
@@ -192,7 +192,7 @@ describe('NetworkStatus', () => {
 describe('TableHeader', () => {
   const setup = (n: number) =>
     renderWithProviders(<TableHeader />, {
-      initializeState: (s) => s.set(countriesState, countries.slice(0, n)),
+      initializeState: (s) => s.set(countriesAtom, countries.slice(0, n)),
     });
 
   it('shows the number of countries found', () => {

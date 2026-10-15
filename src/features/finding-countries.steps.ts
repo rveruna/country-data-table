@@ -1,26 +1,24 @@
 import { createElement } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
 import { act, fireEvent, within } from '@testing-library/react';
-import { RecoilRoot, snapshot_UNSTABLE, useRecoilValue } from 'recoil';
+import { createStore, Provider, useAtomValue } from 'jotai';
 import { expect, vi } from 'vitest';
 import { loadFeature } from '@amiceli/vitest-cucumber';
 import { SearchInput } from '../components/SearchInput';
-import { countriesState, filteredCountriesSelector, filtersState } from '../store/countryStore';
+import { countriesAtom, filteredCountriesAtom, filtersAtom } from '../store/countryStore';
 import type { CountryFilters } from '../types/country';
 import { countries } from '../test/fixtures';
 import { Steps, runRules } from './support/runRules';
 
-// Search and filters: bound straight to the filtering selector, with no rendering.
+// Search and filters: bound straight to the filtering atom through a store, with no rendering.
 let filters: CountryFilters = {};
 
-const shown = () =>
-  snapshot_UNSTABLE((s) => {
-    s.set(countriesState, countries);
-    s.set(filtersState, filters);
-  })
-    .getLoadable(filteredCountriesSelector)
-    .getValue()
-    .map((c) => c.code);
+function shown() {
+  const store = createStore();
+  store.set(countriesAtom, countries);
+  store.set(filtersAtom, filters);
+  return store.get(filteredCountriesAtom).map((c) => c.code);
+}
 
 const codes = (list: string) => (list ? list.split(',').map((c) => c.trim()) : []);
 
@@ -31,7 +29,7 @@ let root: Root | undefined;
 let screen: ReturnType<typeof within>;
 
 function AppliedSearch() {
-  return createElement('output', { 'data-testid': 'applied' }, useRecoilValue(filtersState).search ?? '');
+  return createElement('output', { 'data-testid': 'applied' }, useAtomValue(filtersAtom).search ?? '');
 }
 
 const wait = (ms: number) => act(() => void vi.advanceTimersByTime(ms));
@@ -67,7 +65,7 @@ const steps = new Steps()
     const container = document.body.appendChild(document.createElement('div'));
     root = createRoot(container);
     act(() =>
-      root?.render(createElement(RecoilRoot, null, createElement(SearchInput), createElement(AppliedSearch))),
+      root?.render(createElement(Provider, null, createElement(SearchInput), createElement(AppliedSearch))),
     );
     screen = within(container);
   })

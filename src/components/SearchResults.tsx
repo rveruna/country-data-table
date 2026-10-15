@@ -1,15 +1,15 @@
 import { memo } from 'react';
-import { useRecoilValue } from 'recoil';
-import { filtersState, filteredCountriesSelector, countriesState } from '../store/countryStore';
+import { useAtomValue } from 'jotai';
+import { filtersAtom, filteredCountriesAtom, countriesAtom } from '../store/countryStore';
 
 interface SearchResultsProps {
   className?: string;
 }
 
 const SearchResultsBase: React.FC<SearchResultsProps> = ({ className = '' }) => {
-  const filters = useRecoilValue(filtersState);
-  const filteredCountries = useRecoilValue(filteredCountriesSelector);
-  const allCountries = useRecoilValue(countriesState);
+  const filters = useAtomValue(filtersAtom);
+  const filteredCountries = useAtomValue(filteredCountriesAtom);
+  const allCountries = useAtomValue(countriesAtom);
 
   if (!filters.search) return null;
 

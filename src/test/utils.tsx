@@ -1,14 +1,15 @@
 import type { ReactElement } from 'react';
 import { render } from '@testing-library/react';
 import { MemoryRouter, useLocation } from 'react-router-dom';
-import { RecoilRoot, type MutableSnapshot } from 'recoil';
+import { createStore, Provider, type Store } from 'jotai';
 import { vi } from 'vitest';
 import type { Country } from '../types/country';
-import { countriesState } from '../store/countryStore';
+import { countriesAtom } from '../store/countryStore';
 
 interface Options {
   route?: string;
-  initializeState?: (snapshot: MutableSnapshot) => void;
+  /** Sets atoms in the store the render gets, before it renders. */
+  initializeState?: (store: Store) => void;
   /** Responses for successive fetch calls. When given, fetch is stubbed and a call beyond the list throws. */
   mocks?: MockResponse[];
 }
@@ -24,19 +25,22 @@ export function renderWithProviders(
   { route = '/', initializeState, mocks = [] }: Options = {},
 ) {
   if (mocks.length > 0) stubFetch(mocks);
+  // Each render gets a store of its own, so no state leaks from one test into the next
+  const store = createStore();
+  initializeState?.(store);
   return render(
     <MemoryRouter initialEntries={[route]}>
-      <RecoilRoot initializeState={initializeState}>
+      <Provider store={store}>
         {ui}
         <LocationDisplay />
-      </RecoilRoot>
+      </Provider>
     </MemoryRouter>,
   );
 }
 
 /** Preloads the countries atom, as if the query had already finished. */
-export const withCountries = (list: Country[]) => (snapshot: MutableSnapshot) => {
-  snapshot.set(countriesState, list);
+export const withCountries = (list: Country[]) => (store: Store) => {
+  store.set(countriesAtom, list);
 };
 
 export type MockResponse = { kind: 'data'; countries: Country[] } | { kind: 'error'; message: string };

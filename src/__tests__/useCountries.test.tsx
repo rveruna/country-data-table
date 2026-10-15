@@ -1,16 +1,16 @@
 import { describe, expect, it, vi } from 'vitest';
 import type { ReactNode } from 'react';
 import { act, renderHook, waitFor } from '@testing-library/react';
-import { RecoilRoot, useRecoilValue } from 'recoil';
+import { Provider, useAtomValue } from 'jotai';
 import { useCountries } from '../hooks/useCountries';
-import { countriesState } from '../store/countryStore';
+import { countriesAtom } from '../store/countryStore';
 import { countries } from '../test/fixtures';
 import { countriesErrorMock, countriesQueryMock, stubFetch } from '../test/utils';
 
-const wrapper = ({ children }: { children: ReactNode }) => <RecoilRoot>{children}</RecoilRoot>;
+const wrapper = ({ children }: { children: ReactNode }) => <Provider>{children}</Provider>;
 
 const setup = () =>
-  renderHook(() => ({ ...useCountries(), countries: useRecoilValue(countriesState) }), { wrapper });
+  renderHook(() => ({ ...useCountries(), countries: useAtomValue(countriesAtom) }), { wrapper });
 
 /** A fetch that never answers on its own, but rejects like the real one when its request is aborted. */
 function hangingFetch() {

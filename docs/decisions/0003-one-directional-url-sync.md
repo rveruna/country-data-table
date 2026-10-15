@@ -4,10 +4,11 @@ Status: accepted
 
 ## Context
 
-Page, page size and filters live in both Recoil state and the URL, so a view can be shared. The first
-version had two effects, one writing the URL from the state and one reading the state from the URL, which
-triggered each other. It worked by accident, and it lost the page number on a shared link. A first attempt at
-a fix, skipping writes that changed nothing, made the effects loop forever, which hung the test run.
+Page, page size and filters live in both the app state (Recoil then, Jotai since
+[0006](0006-replace-recoil-with-jotai.md)) and the URL, so a view can be shared. The first version had two
+effects, one writing the URL from the state and one reading the state from the URL, which triggered each
+other. It worked by accident, and it lost the page number on a shared link. A first attempt at a fix, skipping
+writes that changed nothing, made the effects loop forever, which hung the test run.
 
 ## Decision
 

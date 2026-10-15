@@ -1,16 +1,16 @@
 import { describe, expect, it } from 'vitest';
 import { screen, within } from '@testing-library/react';
-import type { MutableSnapshot } from 'recoil';
+import type { Store } from 'jotai';
 import { CountryTable } from '../components/CountryTable';
-import { countriesState, filtersState, paginationState } from '../store/countryStore';
+import { countriesAtom, filtersAtom, paginationAtom } from '../store/countryStore';
 import { countries } from '../test/fixtures';
 import { renderWithProviders } from '../test/utils';
 
-const setup = (page = 1, limit = 10, extra?: (s: MutableSnapshot) => void) =>
+const setup = (page = 1, limit = 10, extra?: (s: Store) => void) =>
   renderWithProviders(<CountryTable />, {
     initializeState: (s) => {
-      s.set(countriesState, countries);
-      s.set(paginationState, { page, limit });
+      s.set(countriesAtom, countries);
+      s.set(paginationAtom, { page, limit });
       extra?.(s);
     },
   });
@@ -51,7 +51,7 @@ describe('CountryTable', () => {
   });
 
   it('shows the filtered countries only', () => {
-    setup(1, 10, (s) => s.set(filtersState, { continent: 'Oceania' }));
+    setup(1, 10, (s) => s.set(filtersAtom, { continent: 'Oceania' }));
 
     expect(bodyRows()).toHaveLength(2);
     expect(screen.getByText('Australia')).toBeInTheDocument();
@@ -59,7 +59,7 @@ describe('CountryTable', () => {
   });
 
   it('shows a helpful message when nothing matches', () => {
-    setup(1, 10, (s) => s.set(filtersState, { search: 'atlantis' }));
+    setup(1, 10, (s) => s.set(filtersAtom, { search: 'atlantis' }));
 
     expect(screen.getByText('No countries found')).toBeInTheDocument();
     expect(screen.getByText('Try adjusting your filters or search terms')).toBeInTheDocument();

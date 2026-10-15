@@ -9,7 +9,7 @@
 
 Want the longer version? [Watch the full one-minute walkthrough](demo.gif) (a 20 MB GIF).
 
-A responsive table of the world's countries with filtering, search, pagination and shareable URLs. Built with React, TypeScript, Recoil and Tailwind CSS, with a small `fetch`-based GraphQL client. It scores **100 on all four Lighthouse categories** (performance, accessibility, best practices and SEO, on simulated mobile) and ships 88 kB of JavaScript gzipped; see [docs/performance.md](docs/performance.md) for how that was measured.
+A responsive table of the world's countries with filtering, search, pagination and shareable URLs. Built with React, TypeScript, Jotai and Tailwind CSS, with a small `fetch`-based GraphQL client. It scores **100 on all four Lighthouse categories** (performance, accessibility, best practices and SEO, on simulated mobile) and ships 90 kB of JavaScript gzipped; see [docs/performance.md](docs/performance.md) for how that was measured.
 
 Data comes from the public [Countries GraphQL API](https://countries.trevorblades.com/).
 
@@ -40,8 +40,8 @@ npm run perf:scale        # interaction time with 250 to 25,000 countries
 
 ## How it is put together
 
-- **One request, derived views.** All countries are fetched once with a small client (`src/lib/graphql.ts`) that posts the query with `fetch`, cancels it if the component goes away or retries, and turns failures into readable errors. Filtering and pagination are Recoil selectors derived from that list and the filter state, so nothing is refetched when you change a filter.
-- **Derived, not synced.** The state holds only the page and the page size. Totals and page counts are derived by a selector, because copying them into state with an effect cost an extra render on every change.
+- **One request, derived views.** All countries are fetched once with a small client (`src/lib/graphql.ts`) that posts the query with `fetch`, cancels it if the component goes away or retries, and turns failures into readable errors. Filtering and pagination are Jotai atoms derived from that list and the filter state, so nothing is refetched when you change a filter.
+- **Derived, not synced.** The state holds only the page and the page size. Totals and page counts are derived by an atom, because copying them into state with an effect cost an extra render on every change.
 - **URL as shared state.** `useUrlState` reads the URL into the state when they disagree (a shared link, or back and forward) and writes the state to the URL when they disagree, and never in both directions at once. It runs in its own component so a URL change does not re-render the app.
 - **Debounced search.** `useDebounce` delays updating the filters while you type, and the input syncs back when filters change from outside (for example from the URL).
 
@@ -61,7 +61,7 @@ Measured, not assumed. The app was already fast, so the gains are modest but rea
 
 154 tests in 15 files, using Vitest and React Testing Library, with 100% of statements, lines and functions and 99.4% of branches covered. `fetch` is stubbed, so the tests run offline and never call the real API.
 
-- **Logic:** the filter, search, pagination and currency selectors, the debounce hook, and the data hook and GraphQL client (success, errors, retry, and cancelling a request in flight).
+- **Logic:** the filter, search, pagination and currency atoms, the debounce hook, and the data hook and GraphQL client (success, errors, retry, and cancelling a request in flight).
 - **URL sync:** restoring page, page size and filters from a link, falling back from invalid values, and writing state back to the URL.
 - **Components:** every component, queried by role and accessible name, as a user would find them.
 - **Whole app:** loading, error and retry, filtering, searching, paging and opening a shared link, against mocked GraphQL data.
@@ -88,7 +88,7 @@ What the table promises is written down as plain-English rules in Gherkin featur
 - [Paging](src/features/paging.feature): the page sizes, a last page with fewer rows, and paging a filtered list
 - [Shared links](src/features/shared-links.feature): restoring a view from a link, falling back from values that are not valid, and surviving a refresh
 
-The steps call the filtering and paging selectors directly, with no browser and no network. The 300 ms wait and the URL sync live in a component and a hook, so those steps render them on their own. A failing rule means the code is wrong, so a rule is never edited to make a build pass. A rule the code does not meet yet is tagged `@known-bug` and shows as skipped; there are none today. [Decision 0005](docs/decisions/0005-rules-as-executable-feature-files.md) explains the approach.
+The steps read the filtering and paging atoms directly from a store, with no browser and no network. The 300 ms wait and the URL sync live in a component and a hook, so those steps render them on their own. A failing rule means the code is wrong, so a rule is never edited to make a build pass. A rule the code does not meet yet is tagged `@known-bug` and shows as skipped; there are none today. [Decision 0005](docs/decisions/0005-rules-as-executable-feature-files.md) explains the approach.
 
 **To add a scenario,** add a row to an `Examples` table, or a new scenario, in the `.feature` file. If it reuses existing steps, that is all. A new step needs one `define` in the `.steps.ts` file next to it.
 

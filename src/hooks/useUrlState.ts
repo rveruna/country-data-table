@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { useRecoilState } from 'recoil';
-import { paginationState, filtersState } from '../store/countryStore';
+import { useAtom } from 'jotai';
+import { paginationAtom, filtersAtom } from '../store/countryStore';
 import { PAGINATION_OPTIONS } from '../utils/constants';
 import type { CountryFilters, PaginationState } from '../types/country';
 
@@ -19,7 +19,7 @@ function toQuery(pagination: PaginationState, filters: CountryFilters): string {
 }
 
 /**
- * Keeps the URL and the Recoil state in step.
+ * Keeps the URL and the Jotai state in step.
  *
  * Each effect acts only when the two disagree, and only in one direction:
  * state changes write the URL, URL changes (a shared link, back or forward) read into state.
@@ -27,8 +27,8 @@ function toQuery(pagination: PaginationState, filters: CountryFilters): string {
  */
 export const useUrlState = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const [pagination, setPagination] = useRecoilState(paginationState);
-  const [filters, setFilters] = useRecoilState(filtersState);
+  const [pagination, setPagination] = useAtom(paginationAtom);
+  const [filters, setFilters] = useAtom(filtersAtom);
 
   const urlQuery = searchParams.toString();
   const stateQuery = toQuery(pagination, filters);

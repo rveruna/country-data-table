@@ -1,16 +1,16 @@
 import { describe, expect, it } from 'vitest';
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { useRecoilValue } from 'recoil';
+import { useAtomValue } from 'jotai';
 import { FilterControls } from '../components/FilterControls';
-import { countriesState, filtersState, paginationState } from '../store/countryStore';
+import { countriesAtom, filtersAtom, paginationAtom } from '../store/countryStore';
 import type { CountryFilters } from '../types/country';
 import { countries } from '../test/fixtures';
 import { renderWithProviders } from '../test/utils';
 
 function Probe() {
-  const filters = useRecoilValue(filtersState);
-  const pagination = useRecoilValue(paginationState);
+  const filters = useAtomValue(filtersAtom);
+  const pagination = useAtomValue(paginationAtom);
   return <pre data-testid="probe">{JSON.stringify({ page: pagination.page, ...filters })}</pre>;
 }
 
@@ -22,9 +22,9 @@ const setup = (initialFilters: CountryFilters = {}, page = 3) =>
     </>,
     {
       initializeState: (s) => {
-        s.set(countriesState, countries);
-        s.set(filtersState, initialFilters);
-        s.set(paginationState, { page, limit: 10 });
+        s.set(countriesAtom, countries);
+        s.set(filtersAtom, initialFilters);
+        s.set(paginationAtom, { page, limit: 10 });
       },
     },
   );
