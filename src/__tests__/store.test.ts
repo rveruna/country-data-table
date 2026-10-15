@@ -87,7 +87,7 @@ describe('paginatedCountriesSelector', () => {
   const page = (pageNumber: number, limit: number, list = makeCountries(25)) =>
     read(paginatedCountriesSelector, (s) => {
       s.set(countriesState, list);
-      s.set(paginationState, { page: pageNumber, limit, total: list.length, totalPages: Math.ceil(list.length / limit) });
+      s.set(paginationState, { page: pageNumber, limit });
     }).map((c) => c.code);
 
   it('returns the first page', () => {
@@ -110,7 +110,7 @@ describe('paginatedCountriesSelector', () => {
     const result = read(paginatedCountriesSelector, (s) => {
       s.set(countriesState, countries);
       s.set(filtersState, { continent: 'Europe' });
-      s.set(paginationState, { page: 1, limit: 2, total: 4, totalPages: 2 });
+      s.set(paginationState, { page: 1, limit: 2 });
     });
     expect(result.map((c) => c.code)).toEqual(['GB', 'FR']);
   });

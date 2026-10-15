@@ -10,7 +10,7 @@ import { renderWithProviders } from '../test/utils';
 const setup = (total: number, page = 1, limit = 10) => {
   const init = (s: MutableSnapshot) => {
     s.set(countriesState, makeCountries(total));
-    s.set(paginationState, { page, limit, total, totalPages: Math.ceil(total / limit) });
+    s.set(paginationState, { page, limit });
   };
   return renderWithProviders(<Pagination />, { initializeState: init });
 };

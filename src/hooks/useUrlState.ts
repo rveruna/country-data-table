@@ -3,12 +3,12 @@ import { useSearchParams } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
 import { paginationState, filtersState } from '../store/countryStore';
 import { PAGINATION_OPTIONS } from '../utils/constants';
-import type { CountryFilters, PaginationInfo } from '../types/country';
+import type { CountryFilters, PaginationState } from '../types/country';
 
 const DEFAULT_LIMIT = 10;
 
 /** The query string a given page, page size and set of filters should produce. */
-function toQuery(pagination: Pick<PaginationInfo, 'page' | 'limit'>, filters: CountryFilters): string {
+function toQuery(pagination: PaginationState, filters: CountryFilters): string {
   const params = new URLSearchParams();
   if (pagination.page > 1) params.set('page', pagination.page.toString());
   if (pagination.limit !== DEFAULT_LIMIT) params.set('limit', pagination.limit.toString());

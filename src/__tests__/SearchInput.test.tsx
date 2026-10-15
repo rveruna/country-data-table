@@ -35,7 +35,7 @@ describe('SearchInput', () => {
         <SearchInput />
         <Probe />
       </>,
-      { initializeState: (s) => s.set(paginationState, { page: initialPage, limit: 10, total: 100, totalPages: 10 }) },
+      { initializeState: (s) => s.set(paginationState, { page: initialPage, limit: 10 }) },
     );
   }
 

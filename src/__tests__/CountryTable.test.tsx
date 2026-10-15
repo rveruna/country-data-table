@@ -10,7 +10,7 @@ const setup = (page = 1, limit = 10, extra?: (s: MutableSnapshot) => void) =>
   renderWithProviders(<CountryTable />, {
     initializeState: (s) => {
       s.set(countriesState, countries);
-      s.set(paginationState, { page, limit, total: countries.length, totalPages: Math.ceil(countries.length / limit) });
+      s.set(paginationState, { page, limit });
       extra?.(s);
     },
   });

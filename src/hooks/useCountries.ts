@@ -7,17 +7,12 @@ import {
   countriesState, 
   loadingState, 
   errorState,
-  paginationState,
-  filteredCountriesSelector
 } from '../store/countryStore';
-import { useRecoilValue } from 'recoil';
 
 export const useCountries = () => {
   const [countries, setCountries] = useRecoilState(countriesState);
   const [loading, setLoading] = useRecoilState(loadingState);
   const [error, setError] = useRecoilState(errorState);
-  const [pagination, setPagination] = useRecoilState(paginationState);
-  const filteredCountries = useRecoilValue(filteredCountriesSelector);
 
   const { data, loading: queryLoading, error: queryError, refetch } = useQuery<CountriesData>(
     GET_COUNTRIES,
@@ -44,18 +39,6 @@ export const useCountries = () => {
       setCountries(data.countries);
     }
   }, [data, setCountries]);
-
-  useEffect(() => {
-    const total = filteredCountries.length;
-    const totalPages = Math.ceil(total / pagination.limit);
-    
-    setPagination(prev => ({
-      ...prev,
-      total,
-      totalPages,
-      page: prev.page > totalPages ? 1 : prev.page
-    }));
-  }, [filteredCountries.length, pagination.limit, setPagination]);
 
   return {
     countries,
