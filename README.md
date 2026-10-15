@@ -9,7 +9,7 @@
 
 Want the longer version? [Watch the full one-minute walkthrough](demo.gif) (a 20 MB GIF).
 
-A responsive table of the world's countries with filtering, search, pagination and shareable URLs. Built with React, TypeScript, Recoil and Tailwind CSS, with a small `fetch`-based GraphQL client. It scores **100 on all four Lighthouse categories** (performance, accessibility, best practices and SEO, on simulated mobile) and ships 87 kB of JavaScript gzipped; see [docs/performance.md](docs/performance.md) for how that was measured.
+A responsive table of the world's countries with filtering, search, pagination and shareable URLs. Built with React, TypeScript, Recoil and Tailwind CSS, with a small `fetch`-based GraphQL client. It scores **100 on all four Lighthouse categories** (performance, accessibility, best practices and SEO, on simulated mobile) and ships 88 kB of JavaScript gzipped; see [docs/performance.md](docs/performance.md) for how that was measured.
 
 Data comes from the public [Countries GraphQL API](https://countries.trevorblades.com/).
 
@@ -31,7 +31,7 @@ npm run dev       # http://localhost:5173
 npm run build     # type-check and production build
 npm run lint
 npm run format    # Prettier
-npm test          # 152 tests and 59 rule scenarios
+npm test          # 154 tests and 59 rule scenarios
 npm run test:coverage
 npm run size      # bundle size budget (after a build)
 npm run perf:lighthouse   # Lighthouse, five runs in real Chrome
@@ -59,7 +59,7 @@ Measured, not assumed. The app was already fast, so the gains are modest but rea
 
 ## Tests
 
-152 tests in 15 files, using Vitest and React Testing Library, with 100% of statements and lines, 99.5% of branches and 94% of functions covered. `fetch` is stubbed, so the tests run offline and never call the real API.
+154 tests in 15 files, using Vitest and React Testing Library, with 100% of statements, lines and functions and 99.4% of branches covered. `fetch` is stubbed, so the tests run offline and never call the real API.
 
 - **Logic:** the filter, search, pagination and currency selectors, the debounce hook, and the data hook and GraphQL client (success, errors, retry, and cancelling a request in flight).
 - **URL sync:** restoring page, page size and filters from a link, falling back from invalid values, and writing state back to the URL.
