@@ -16,7 +16,7 @@ name, an empty search). Every file opens by saying it is agreed behaviour, and t
 wrong. The steps sit next to each file in `X.steps.ts` and call the selectors directly; only the debounce and the
 URL sync, which live in a component and a hook, are rendered.
 
-They run under Vitest with `@amiceli/vitest-cucumber` (version 5, the line that supports Vitest 3), so `npm test`
+They run under Vitest with `@amiceli/vitest-cucumber` (version 8, the line that supports Vitest 5), so `npm test`
 and CI run them with no extra step. That library expects every scenario to be named again in code, so a small
 runner in `src/features/support` binds each step by pattern instead, as Cucumber does. A new scenario that uses
 existing steps needs only the feature file.
@@ -31,6 +31,6 @@ A rule the code does not meet yet is tagged `@known-bug` and reported as skipped
   keeps `limit=7` in the address, against [0003](0003-one-directional-url-sync.md). The value fell back to its
   default, the state did not change, so nothing rewrote the address. It is fixed: reading the URL now cleans it
   too, and the scenarios that were tagged `@known-bug` run.
-- Vitest counts each step as a test, so its total (363) is larger than the number of scenarios (59).
+- Vitest counts each step as a test, so its total (365) is larger than the number of scenarios (59).
 - There is one more development dependency and a 90-line runner of our own to maintain. Neither reaches the
   bundle.

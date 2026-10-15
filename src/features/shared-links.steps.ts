@@ -1,4 +1,4 @@
-import { createElement } from 'react';
+import { createElement, useEffect } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
 import { act } from '@testing-library/react';
 import { MemoryRouter, useLocation } from 'react-router-dom';
@@ -22,9 +22,13 @@ function Page() {
   useUrlState();
   const [pagination, setP] = useRecoilState(paginationState);
   const [filters, setF] = useRecoilState(filtersState);
-  current = { pagination, filters, address: useLocation().search };
-  setPagination = setP;
-  setFilters = setF;
+  const address = useLocation().search;
+  // Hands what the page shows to the steps once it commits. Writing outside the component belongs in an effect.
+  useEffect(() => {
+    current = { pagination, filters, address };
+    setPagination = setP;
+    setFilters = setF;
+  });
   return null;
 }
 

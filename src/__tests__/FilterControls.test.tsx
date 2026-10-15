@@ -93,6 +93,14 @@ describe('FilterControls', () => {
     expect(removeButtons()).toHaveLength(1);
   });
 
+  it('removes the currency filter with its chip and keeps the continent', async () => {
+    setup({ continent: 'Europe', currency: 'EUR' });
+
+    await userEvent.click(screen.getByRole('button', { name: 'Remove EUR filter' }));
+
+    expect(probe()).toEqual({ page: 1, continent: 'Europe' });
+  });
+
   it('clears every filter at once', async () => {
     setup({ continent: 'Europe', currency: 'EUR', search: 'fr' });
 

@@ -16,7 +16,7 @@ export const ErrorAlert: React.FC<ErrorAlertProps> = ({
   return (
     <div className={`bg-red-50 border border-red-200 rounded-lg p-4 ${className}`}>
       <div className="flex items-start">
-        <div className="flex-shrink-0">
+        <div className="shrink-0">
           <svg className="h-5 w-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
               strokeLinecap="round"
@@ -34,7 +34,7 @@ export const ErrorAlert: React.FC<ErrorAlertProps> = ({
               {onRetry && (
                 <button
                   onClick={onRetry}
-                  className="bg-red-100 hover:bg-red-200 text-red-800 px-3 py-1 rounded text-sm font-medium transition-colors"
+                  className="bg-red-100 hover:bg-red-200 text-red-800 px-3 py-1 rounded-sm text-sm font-medium transition-colors"
                 >
                   Try Again
                 </button>
@@ -42,7 +42,7 @@ export const ErrorAlert: React.FC<ErrorAlertProps> = ({
               {onDismiss && (
                 <button
                   onClick={onDismiss}
-                  className="bg-transparent hover:bg-red-100 text-red-600 px-3 py-1 rounded text-sm font-medium transition-colors"
+                  className="bg-transparent hover:bg-red-100 text-red-600 px-3 py-1 rounded-sm text-sm font-medium transition-colors"
                 >
                   Dismiss
                 </button>
