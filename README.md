@@ -1,6 +1,6 @@
 # Country Data Table
 
-A responsive table of the world's countries with filtering, search, pagination and shareable URLs. Built with React, TypeScript, Apollo Client (GraphQL), Recoil and Tailwind CSS.
+A responsive table of the world's countries with filtering, search, pagination and shareable URLs. Built with React, TypeScript, Recoil and Tailwind CSS, with a small `fetch`-based GraphQL client. It scores **100 on Lighthouse** (simulated mobile) and ships 86 kB of JavaScript gzipped; see [docs/performance.md](docs/performance.md) for how that was measured.
 
 <p align="center"><img src="./demo.gif" alt="Demo: filtering, searching and paging the country table" width="800" /></p>
 
@@ -23,27 +23,35 @@ npm install
 npm run dev       # http://localhost:5173
 npm run build     # type-check and production build
 npm run lint
-npm test          # 132 tests
+npm test          # 149 tests
 npm run test:coverage
+npm run size      # bundle size budget (after a build)
+npm run perf:lighthouse   # Lighthouse, five runs in real Chrome
+npm run perf:scale        # interaction time with 250 to 25,000 countries
 ```
 
 ## How it is put together
 
-- **One fetch, derived views.** All countries are fetched once with Apollo. Filtering and pagination are Recoil selectors derived from that list and from the filter state, so nothing is refetched when you change a filter.
-- **URL as shared state.** `useUrlState` keeps the query string and the Recoil state in sync in both directions, and ignores a page-size value that is not one of the allowed options.
+- **One request, derived views.** All countries are fetched once with a small client (`src/lib/graphql.ts`) that posts the query with `fetch`, cancels it if the component goes away or retries, and turns failures into readable errors. Filtering and pagination are Recoil selectors derived from that list and the filter state, so nothing is refetched when you change a filter.
+- **Derived, not synced.** The state holds only the page and the page size. Totals and page counts are derived by a selector, because copying them into state with an effect cost an extra render on every change.
+- **URL as shared state.** `useUrlState` reads the URL into the state when they disagree (a shared link, or back and forward) and writes the state to the URL when they disagree, and never in both directions at once. It runs in its own component so a URL change does not re-render the app.
 - **Debounced search.** `useDebounce` delays updating the filters while you type, and the input syncs back when filters change from outside (for example from the URL).
+
+## Performance
+
+Measured, not assumed. The app was already fast, so the gains are modest but real. Choosing a continent now renders the header, table and pagination once instead of five times, and replacing Apollo Client (45% of the bundle, for one query) with a `fetch` client cut JavaScript from 142.7 kB to 86.1 kB gzipped and first paint by 300 ms. With 25,000 countries, load time fell from 1.3 s to 0.2 s and filtering from 21 ms to 9 ms on a 4x slowed CPU. The page still renders only 10 rows, so list virtualisation was measured and judged unnecessary. [docs/performance.md](docs/performance.md) has the method, every number and the mistakes I made on the way. CI fails if the bundle passes its budget, the Lighthouse score drops below 90, or the render budget tests fail.
 
 ## Tests
 
-132 tests in 12 files, using Vitest and React Testing Library, with 97% of statements, 99% of branches and 91% of functions covered. Apollo is replaced by a mocked provider, so the tests run offline and never call the real API.
+149 tests in 15 files, using Vitest and React Testing Library, with 100% of statements and lines, 99.5% of branches and 94% of functions covered. `fetch` is stubbed, so the tests run offline and never call the real API.
 
-- **Logic:** the filter, search, pagination and currency selectors, and the debounce hook.
+- **Logic:** the filter, search, pagination and currency selectors, the debounce hook, and the data hook and GraphQL client (success, errors, retry, and cancelling a request in flight).
 - **URL sync:** restoring page, page size and filters from a link, falling back from invalid values, and writing state back to the URL.
 - **Components:** every component, queried by role and accessible name, as a user would find them.
 - **Whole app:** loading, error and retry, filtering, searching, paging and opening a shared link, against mocked GraphQL data.
 - **Accessibility:** axe-core runs against the loading, loaded, filtered, empty, later-page, error and error-boundary states. It cannot check colour contrast, because jsdom does not compute styles.
 
-To check that the tests can fail, I broke the app on purpose in 27 ways (for example, an off-by-one page slice, a missing debounce, an unlinked label, a reintroduced heading skip) and ran the suite each time. 26 were caught. The one that was not does nothing visible, because an invalid page in the URL is corrected when the URL is rewritten.
+To check that the tests can fail, I broke the app on purpose in 37 ways (for example, an off-by-one page slice, a missing debounce, an unlinked label, a request that is never cancelled, GraphQL errors ignored) and ran the suite each time. All 37 were caught. A separate render budget test counts re-renders per interaction and fails if the app re-subscribes to the data or the URL sync moves back into `App`.
 
 ### What writing the tests found
 
@@ -52,11 +60,11 @@ To check that the tests can fail, I broke the app on purpose in 27 ways (for exa
 - **The pagination text was wrong with no results.** It read "Showing 1 to 0 of 0 entries" and left Next enabled.
 - **axe-core found two more.** The loading skeleton exposed empty table headers to screen readers, and the error alert's heading jumped from an h1 to an h3. Both are fixed.
 - **"Try Again" reloaded the whole page,** discarding the filters. It now requests the countries again.
-- **Dead code.** Two unused components, an unused `refetch` function, and a word-start search branch that the substring match already covered.
+- **Dead code.** Two unused components, an unused `refetch` function, two unused GraphQL queries, an unused dependency (`formik`), and a word-start search branch that the substring match already covered.
 
 ## Limits and what I would improve
 
-- I have not measured performance or tested across browsers.
+- Performance is measured on one machine with simulated throttling, not on real devices, and I have not tested across browsers.
 - Search is a substring and exact-code match, not a typo-tolerant fuzzy search.
-- `src/lib/apollo.ts` (the real network client) is not covered by tests.
 - Accessibility is checked with axe-core in jsdom, which cannot judge colour contrast or real screen reader behaviour. I would add a browser-based audit and test with a screen reader by hand.
+- The project no longer uses Apollo Client. That was a deliberate trade for the performance gain, since the app makes one query; an app with many related queries would benefit from a cache.
