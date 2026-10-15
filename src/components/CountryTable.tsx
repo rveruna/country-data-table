@@ -46,7 +46,7 @@ const CountryTableBase: React.FC<CountryTableProps> = ({ className = '' }) => {
               <td className="px-3 sm:px-6 py-3 sm:py-4 text-sm text-gray-500">
                 <div className="flex flex-col">
                   <span>{country.continent.name}</span>
-                  <span className="text-xs text-gray-400 md:hidden mt-1">
+                  <span className="text-xs text-gray-600 md:hidden mt-1">
                     {country.currency || 'N/A'}
                   </span>
                 </div>
@@ -62,7 +62,7 @@ const CountryTableBase: React.FC<CountryTableProps> = ({ className = '' }) => {
       {paginatedCountries.length === 0 && (
         <div className="text-center py-12">
           <div className="text-gray-500 text-lg">No countries found</div>
-          <div className="text-gray-400 text-sm mt-2">
+          <div className="text-gray-600 text-sm mt-2">
             Try adjusting your filters or search terms
           </div>
         </div>

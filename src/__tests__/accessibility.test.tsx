@@ -1,4 +1,4 @@
-import { describe, it } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import App from '../App';
@@ -8,6 +8,23 @@ import { expectNoAxeViolations } from '../test/axe';
 import { countriesErrorMock, countriesQueryMock, renderWithProviders } from '../test/utils';
 
 describe('accessibility (axe-core)', () => {
+  it.each([
+    ['while loading', undefined],
+    ['once loaded', 'United States'],
+  ])('has a main landmark %s', async (_state, ready) => {
+    renderWithProviders(<App />, { mocks: [countriesQueryMock(countries)] });
+    if (ready) await screen.findByText(ready);
+
+    expect(screen.getByRole('main')).toBeInTheDocument();
+  });
+
+  it('has a main landmark in the error state', async () => {
+    renderWithProviders(<App />, { mocks: [countriesErrorMock('Network down')] });
+    await screen.findByText('Failed to load countries');
+
+    expect(screen.getByRole('main')).toBeInTheDocument();
+  });
+
   it('has no violations while loading', async () => {
     const { container } = renderWithProviders(<App />, { mocks: [countriesQueryMock(countries)] });
     await expectNoAxeViolations(container);

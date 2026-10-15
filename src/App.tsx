@@ -16,7 +16,7 @@ function App() {
     return (
       <>
       <UrlStateSync />
-      <div className="min-h-screen bg-gray-100 py-8">
+      <main className="min-h-screen bg-gray-100 py-8">
         <div className="max-w-7xl mx-auto px-4">
           <h1 className="text-4xl font-bold text-gray-800 mb-8 text-center">
             Country Data Table
@@ -56,7 +56,7 @@ function App() {
             </div>
           </div>
         </div>
-      </div>
+      </main>
       </>
     );
   }
@@ -65,7 +65,7 @@ function App() {
     return (
       <>
       <UrlStateSync />
-      <div className="min-h-screen bg-gray-100 py-8">
+      <main className="min-h-screen bg-gray-100 py-8">
         <div className="max-w-7xl mx-auto px-4">
           <h1 className="text-4xl font-bold text-gray-800 mb-8 text-center">
             Country Data Table
@@ -88,7 +88,7 @@ function App() {
             <p className="text-gray-600">Unable to load country information at this time.</p>
           </div>
         </div>
-      </div>
+      </main>
       </>
     );
   }
@@ -97,7 +97,7 @@ function App() {
     <ErrorBoundary>
       <UrlStateSync />
       <NetworkStatus />
-      <div className="min-h-screen bg-gray-100 py-4 px-2 sm:py-8 sm:px-4">
+      <main className="min-h-screen bg-gray-100 py-4 px-2 sm:py-8 sm:px-4">
         <div className="max-w-7xl mx-auto">
           <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 mb-6 sm:mb-8 text-center px-4">
             Country Data Table
@@ -114,7 +114,7 @@ function App() {
             </div>
           </div>
         </div>
-      </div>
+      </main>
     </ErrorBoundary>
   );
 }
