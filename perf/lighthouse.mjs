@@ -1,5 +1,6 @@
 // Builds the app against the mock API, serves it, and runs Lighthouse several times in real Chrome.
-// Usage: node perf/lighthouse.mjs [--runs 5] [--label baseline]
+// Usage: node perf/lighthouse.mjs [--runs 5] [--label baseline] [--min-score 90]
+// With --min-score it exits with an error when the median performance score is lower.
 // Set CHROME_PATH if Chrome is not in the default location.
 import { spawn, spawnSync } from 'node:child_process';
 import { mkdirSync, writeFileSync } from 'node:fs';
@@ -10,6 +11,7 @@ const flag = (name, fallback) => {
 };
 const runs = Number(flag('runs', 5));
 const label = flag('label', 'run');
+const minScore = flag('min-score', undefined);
 const API = 'http://localhost:4000/graphql';
 const APP = 'http://localhost:4173';
 const chrome =
@@ -79,6 +81,11 @@ try {
 
   mkdirSync(new URL('./results/', import.meta.url), { recursive: true });
   writeFileSync(new URL(`./results/${label}.json`, import.meta.url), JSON.stringify({ label, runs, median: med, all: results }, null, 2));
+
+  if (minScore !== undefined && med.score < Number(minScore)) {
+    console.error(`\nPerformance score ${med.score} is below the minimum of ${minScore}.`);
+    process.exitCode = 1;
+  }
 } finally {
   stop();
 }

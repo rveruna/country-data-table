@@ -12,7 +12,8 @@
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "perf:lighthouse": "node perf/lighthouse.mjs",
-    "perf:scale": "node perf/scale.mjs"
+    "perf:scale": "node perf/scale.mjs",
+    "size": "node perf/size.mjs"
   },
   "dependencies": {
     "react": "^18.2.0",
