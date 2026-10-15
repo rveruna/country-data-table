@@ -81,7 +81,8 @@ describe('App: filtering and searching', () => {
 
     await waitFor(() => expect(bodyRowCount()).toBe(1));
     expect(screen.getByText('Germany')).toBeInTheDocument();
-    expect(url().get('search')).toBe('ger');
+    // The debounce fires outside a user event, so the URL is written in the commit after the table's
+    await waitFor(() => expect(url().get('search')).toBe('ger'));
     expect(screen.getByText(/Found/)).toHaveTextContent('Found 1 of 14 countries matching "ger"');
   });
 
