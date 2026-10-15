@@ -5,7 +5,8 @@ import App from '../App';
 import { countries } from '../test/fixtures';
 import { countriesErrorMock, countriesQueryMock, renderWithProviders } from '../test/utils';
 
-const renderApp = (route = '/') => renderWithProviders(<App />, { route, mocks: [countriesQueryMock(countries)] });
+const renderApp = (route = '/') =>
+  renderWithProviders(<App />, { route, mocks: [countriesQueryMock(countries)] });
 
 /** Rows in the table body, excluding the header row. */
 const bodyRowCount = () => screen.getAllByRole('row').length - 1;
@@ -39,7 +40,9 @@ describe('App: loading and errors', () => {
   });
 
   it('requests the countries again when "Try Again" is pressed', async () => {
-    renderWithProviders(<App />, { mocks: [countriesErrorMock('Network down'), countriesQueryMock(countries)] });
+    renderWithProviders(<App />, {
+      mocks: [countriesErrorMock('Network down'), countriesQueryMock(countries)],
+    });
 
     await userEvent.click(await screen.findByRole('button', { name: 'Try Again' }));
 

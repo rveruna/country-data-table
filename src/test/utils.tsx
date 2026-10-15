@@ -19,7 +19,10 @@ export function LocationDisplay() {
   return <div data-testid="location">{search}</div>;
 }
 
-export function renderWithProviders(ui: ReactElement, { route = '/', initializeState, mocks = [] }: Options = {}) {
+export function renderWithProviders(
+  ui: ReactElement,
+  { route = '/', initializeState, mocks = [] }: Options = {},
+) {
   if (mocks.length > 0) stubFetch(mocks);
   return render(
     <MemoryRouter initialEntries={[route]}>

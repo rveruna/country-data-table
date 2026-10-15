@@ -39,7 +39,16 @@ describe('FilterControls', () => {
     setup();
     const labels = Array.from(continent().options).map((o) => o.textContent);
 
-    expect(labels).toEqual(['All Continents', 'Africa', 'Antarctica', 'Asia', 'Europe', 'North America', 'Oceania', 'South America']);
+    expect(labels).toEqual([
+      'All Continents',
+      'Africa',
+      'Antarctica',
+      'Asia',
+      'Europe',
+      'North America',
+      'Oceania',
+      'South America',
+    ]);
   });
 
   it('offers each currency from the loaded countries once, sorted', () => {

@@ -13,6 +13,8 @@ for (const [ext, budget] of Object.entries(BUDGETS)) {
   const kb = files.reduce((sum, f) => sum + gzipSync(readFileSync(new URL(f, dir))).length, 0) / 1000;
   const ok = kb <= budget;
   failed ||= !ok;
-  console.log(`${ok ? 'ok  ' : 'FAIL'} ${ext.slice(1).toUpperCase().padEnd(3)} ${kb.toFixed(1)} kB gzipped (budget ${budget} kB)`);
+  console.log(
+    `${ok ? 'ok  ' : 'FAIL'} ${ext.slice(1).toUpperCase().padEnd(3)} ${kb.toFixed(1)} kB gzipped (budget ${budget} kB)`,
+  );
 }
 process.exit(failed ? 1 : 0);

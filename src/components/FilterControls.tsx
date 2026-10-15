@@ -17,11 +17,11 @@ const FilterControlsBase: React.FC<FilterControlsProps> = ({ className = '' }) =
   const uniqueCurrencies = useRecoilValue(uniqueCurrenciesSelector);
 
   const handleContinentChange = (continent: string | undefined) => {
-    updateFilters(prev => ({ ...prev, continent }));
+    updateFilters((prev) => ({ ...prev, continent }));
   };
 
   const handleCurrencyChange = (currency: string | undefined) => {
-    updateFilters(prev => ({ ...prev, currency }));
+    updateFilters((prev) => ({ ...prev, currency }));
   };
 
   const clearFilters = () => {
@@ -39,7 +39,7 @@ const FilterControlsBase: React.FC<FilterControlsProps> = ({ className = '' }) =
       <div className="space-y-4 lg:space-y-0 lg:flex lg:gap-4">
         <div className="flex-1 space-y-4 lg:space-y-0 lg:flex lg:gap-4">
           <SearchInput className="flex-1 lg:flex-2" />
-          
+
           <div className="flex flex-col sm:flex-row gap-4 lg:flex-1">
             <FilterDropdown
               label="Continent"
@@ -49,7 +49,7 @@ const FilterControlsBase: React.FC<FilterControlsProps> = ({ className = '' }) =
               placeholder="All Continents"
               className="flex-1"
             />
-            
+
             <FilterDropdown
               label="Currency"
               value={filters.currency}
@@ -60,7 +60,7 @@ const FilterControlsBase: React.FC<FilterControlsProps> = ({ className = '' }) =
             />
           </div>
         </div>
-        
+
         {hasActiveFilters && (
           <div className="flex justify-center lg:justify-start lg:items-end">
             <button
@@ -72,19 +72,20 @@ const FilterControlsBase: React.FC<FilterControlsProps> = ({ className = '' }) =
           </div>
         )}
       </div>
-      
+
       {filters.search && (
         <div className="mt-3 pt-3 border-t border-gray-200">
           <SearchResults />
         </div>
       )}
-      
+
       {hasActiveFilters && (
         <div className="mt-3 pt-3 border-t border-gray-200">
           <div className="flex flex-wrap gap-2 justify-center sm:justify-start">
             {filters.continent && (
               <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                <span className="hidden sm:inline">Continent: </span>{filters.continent}
+                <span className="hidden sm:inline">Continent: </span>
+                {filters.continent}
                 <button
                   onClick={() => handleContinentChange(undefined)}
                   aria-label={`Remove ${filters.continent} filter`}
@@ -96,7 +97,8 @@ const FilterControlsBase: React.FC<FilterControlsProps> = ({ className = '' }) =
             )}
             {filters.currency && (
               <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                <span className="hidden sm:inline">Currency: </span>{filters.currency}
+                <span className="hidden sm:inline">Currency: </span>
+                {filters.currency}
                 <button
                   onClick={() => handleCurrencyChange(undefined)}
                   aria-label={`Remove ${filters.currency} filter`}
@@ -111,7 +113,7 @@ const FilterControlsBase: React.FC<FilterControlsProps> = ({ className = '' }) =
                 <span className="hidden sm:inline">Search: </span>
                 <span className="max-w-24 sm:max-w-none truncate">{filters.search}</span>
                 <button
-                  onClick={() => updateFilters(prev => ({ ...prev, search: undefined }))}
+                  onClick={() => updateFilters((prev) => ({ ...prev, search: undefined }))}
                   aria-label={`Remove search "${filters.search}"`}
                   className="ml-1 text-purple-600 hover:text-purple-800"
                 >
