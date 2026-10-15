@@ -10,3 +10,4 @@ Each one says what was decided, why, and what it costs.
 | [0003](0003-one-directional-url-sync.md) | Keep the URL and the state in step in one direction at a time |
 | [0004](0004-how-accessibility-is-checked.md) | Check accessibility at four levels, and be explicit about what each misses |
 | [0005](0005-rules-as-executable-feature-files.md) | Write the table's rules as executable feature files |
+| [0006](0006-replace-recoil-with-jotai.md) | Replace Recoil with Jotai |

@@ -61,7 +61,7 @@ included, because waiting for animation frames cannot measure anything under abo
    made the whole page re-render on every change. Each effect now acts only when the URL and the state
    disagree, and the sync lives in a component that renders nothing.
 3. **Derived the page totals instead of copying them into state.** An effect computed the totals and stored
-   them, which cost a second render pass on every filter change. A selector derives them now.
+   them, which cost a second render pass on every filter change. They are derived now.
 4. **Memoised the display components,** which take only a class name.
 5. **Started out in the loading state,** so the first paint is the placeholder and not an empty table.
 
@@ -70,7 +70,7 @@ included, because waiting for animation frames cannot measure anything under abo
 - **No list virtualisation.** I measured 25,000 countries: the page still renders 10 rows, and interactions
   take under 14 ms at a 4x slowdown. Virtualisation would add code to solve a problem the pagination already
   prevents.
-- **No code-splitting.** Everything on the page is needed for the first paint, and 86 kB gzipped is one request.
+- **No code-splitting.** Everything on the page is needed for the first paint, and 90 kB gzipped is one request.
   Splitting it would add requests without making the first paint sooner.
 - **No real-device testing.** The throttling is simulated.
 

@@ -13,7 +13,7 @@ place, and a test could be edited to match the code without anyone noticing that
 Each area has a Gherkin feature file in `src/features` that states its rules in plain English, grouped by `Rule:`
 and driven by `Examples` tables that include the edge cases (the last part page, a code that is also part of a
 name, an empty search). Every file opens by saying it is agreed behaviour, and that a failure means the code is
-wrong. The steps sit next to each file in `X.steps.ts` and call the selectors directly; only the debounce and the
+wrong. The steps sit next to each file in `X.steps.ts` and read the derived state directly; only the debounce and the
 URL sync, which live in a component and a hook, are rendered.
 
 They run under Vitest with `@amiceli/vitest-cucumber` (version 8, the line that supports Vitest 5), so `npm test`
