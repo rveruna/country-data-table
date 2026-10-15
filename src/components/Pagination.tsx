@@ -1,6 +1,6 @@
-import { useId } from 'react';
-import { useRecoilState, useRecoilValue } from 'recoil';
-import { paginationState, filteredCountriesSelector } from '../store/countryStore';
+import { useEffect, useId } from 'react';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { paginationState, paginationInfoSelector } from '../store/countryStore';
 import { PAGINATION_OPTIONS } from '../utils/constants';
 
 interface PaginationProps {
@@ -8,9 +8,16 @@ interface PaginationProps {
 }
 
 export const Pagination: React.FC<PaginationProps> = ({ className = '' }) => {
-  const [pagination, setPagination] = useRecoilState(paginationState);
+  const pagination = useRecoilValue(paginationInfoSelector);
+  const setPagination = useSetRecoilState(paginationState);
   const pageSizeId = useId();
-  const filteredCountries = useRecoilValue(filteredCountriesSelector);
+
+  // A shared link or a smaller result set can leave the page past the end: go back to the first page
+  useEffect(() => {
+    if (pagination.totalPages > 0 && pagination.page > pagination.totalPages) {
+      setPagination(prev => ({ ...prev, page: 1 }));
+    }
+  }, [pagination.page, pagination.totalPages, setPagination]);
 
   const handlePageChange = (newPage: number) => {
     setPagination(prev => ({ ...prev, page: newPage }));
@@ -24,8 +31,8 @@ export const Pagination: React.FC<PaginationProps> = ({ className = '' }) => {
     }));
   };
 
-  const startIndex = filteredCountries.length === 0 ? 0 : (pagination.page - 1) * pagination.limit + 1;
-  const endIndex = Math.min(pagination.page * pagination.limit, filteredCountries.length);
+  const startIndex = pagination.total === 0 ? 0 : (pagination.page - 1) * pagination.limit + 1;
+  const endIndex = Math.min(pagination.page * pagination.limit, pagination.total);
 
   const maxVisiblePages = 5;
   const startPage = Math.max(1, pagination.page - Math.floor(maxVisiblePages / 2));
@@ -55,7 +62,7 @@ export const Pagination: React.FC<PaginationProps> = ({ className = '' }) => {
       {/* Page info */}
       <div className="text-sm text-gray-700 text-center sm:text-left">
         <span className="whitespace-nowrap">
-          Showing {startIndex} to {endIndex} of {filteredCountries.length} entries
+          Showing {startIndex} to {endIndex} of {pagination.total} entries
         </span>
       </div>
 

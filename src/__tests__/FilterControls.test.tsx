@@ -24,7 +24,7 @@ const setup = (initialFilters: CountryFilters = {}, page = 3) =>
       initializeState: (s) => {
         s.set(countriesState, countries);
         s.set(filtersState, initialFilters);
-        s.set(paginationState, { page, limit: 10, total: 14, totalPages: 2 });
+        s.set(paginationState, { page, limit: 10 });
       },
     },
   );

@@ -1,5 +1,5 @@
 import { atom, selector } from 'recoil';
-import { Country, CountryFilters, PaginationInfo } from '../types/country';
+import { Country, CountryFilters, PaginationInfo, PaginationState } from '../types/country';
 import { DEFAULT_PAGINATION } from '../utils/constants';
 
 export const countriesState = atom<Country[]>({
@@ -16,7 +16,7 @@ export const filtersState = atom<CountryFilters>({
   },
 });
 
-export const paginationState = atom<PaginationInfo>({
+export const paginationState = atom<PaginationState>({
   key: 'paginationState',
   default: DEFAULT_PAGINATION,
 });
@@ -89,5 +89,14 @@ export const uniqueCurrenciesSelector = selector({
     });
 
     return Array.from(currencySet).sort();
+  },
+});
+
+export const paginationInfoSelector = selector<PaginationInfo>({
+  key: 'paginationInfoSelector',
+  get: ({ get }) => {
+    const { page, limit } = get(paginationState);
+    const total = get(filteredCountriesSelector).length;
+    return { page, limit, total, totalPages: Math.ceil(total / limit) };
   },
 });

@@ -23,9 +23,14 @@ export interface CountryFilters {
   search?: string;
 }
 
-export interface PaginationInfo {
+/** What is stored: the page being shown and how many rows it holds. */
+export interface PaginationState {
   page: number;
   limit: number;
+}
+
+/** Derived from the stored state and the filtered list, never stored. */
+export interface PaginationInfo extends PaginationState {
   total: number;
   totalPages: number;
 }
