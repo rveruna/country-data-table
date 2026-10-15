@@ -1,66 +1,71 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
 import { paginationState, filtersState } from '../store/countryStore';
 import { PAGINATION_OPTIONS } from '../utils/constants';
+import type { CountryFilters, PaginationInfo } from '../types/country';
 
+const DEFAULT_LIMIT = 10;
+
+/** The query string a given page, page size and set of filters should produce. */
+function toQuery(pagination: Pick<PaginationInfo, 'page' | 'limit'>, filters: CountryFilters): string {
+  const params = new URLSearchParams();
+  if (pagination.page > 1) params.set('page', pagination.page.toString());
+  if (pagination.limit !== DEFAULT_LIMIT) params.set('limit', pagination.limit.toString());
+  if (filters.continent) params.set('continent', filters.continent);
+  if (filters.currency) params.set('currency', filters.currency);
+  if (filters.search) params.set('search', filters.search);
+  return params.toString();
+}
+
+/**
+ * Keeps the URL and the Recoil state in step.
+ *
+ * Each effect acts only when the two disagree, and only in one direction:
+ * state changes write the URL, URL changes (a shared link, back or forward) read into state.
+ * Writing the URL makes it match the state, so it never triggers a read back, and vice versa.
+ */
 export const useUrlState = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [pagination, setPagination] = useRecoilState(paginationState);
   const [filters, setFilters] = useRecoilState(filtersState);
 
-  // Update URL when state changes
+  const urlQuery = searchParams.toString();
+  const stateQuery = toQuery(pagination, filters);
+  const latest = useRef({ urlQuery, stateQuery });
+  latest.current = { urlQuery, stateQuery };
+  const mounted = useRef(false);
+
+  // State to URL. Skipped on first mount: then the URL is the truth and the state has not read it yet.
   useEffect(() => {
-    const params = new URLSearchParams();
-    
-    // Add pagination params
-    if (pagination.page > 1) {
-      params.set('page', pagination.page.toString());
+    if (!mounted.current) {
+      mounted.current = true;
+      return;
     }
-    if (pagination.limit !== 10) {
-      params.set('limit', pagination.limit.toString());
+    if (stateQuery !== latest.current.urlQuery) {
+      setSearchParams(new URLSearchParams(stateQuery), { replace: true });
     }
-    
-    // Add filter params
-    if (filters.continent) {
-      params.set('continent', filters.continent);
-    }
-    if (filters.currency) {
-      params.set('currency', filters.currency);
-    }
-    if (filters.search) {
-      params.set('search', filters.search);
-    }
-    
-    setSearchParams(params, { replace: true });
-  }, [pagination.page, pagination.limit, filters.continent, filters.currency, filters.search, setSearchParams]);
+  }, [stateQuery, setSearchParams]);
 
-  // Update state when URL changes
+  // URL to state.
   useEffect(() => {
-    const pageParam = searchParams.get('page');
-    const limitParam = searchParams.get('limit');
-    const continentParam = searchParams.get('continent');
-    const currencyParam = searchParams.get('currency');
-    const searchParam = searchParams.get('search');
+    if (urlQuery === latest.current.stateQuery) return;
 
-    // Update pagination
-    const newPage = pageParam ? parseInt(pageParam, 10) : 1;
-    const newLimit = limitParam ? parseInt(limitParam, 10) : 10;
-    
-    // Validate limit is one of the allowed options
-    const validLimit = (PAGINATION_OPTIONS as readonly number[]).includes(newLimit) ? newLimit : 10;
-    
-    setPagination(prev => ({
-      ...prev,
-      page: isNaN(newPage) || newPage < 1 ? 1 : newPage,
-      limit: validLimit,
-    }));
+    const params = new URLSearchParams(urlQuery);
+    const parsedPage = parseInt(params.get('page') ?? '', 10);
+    const parsedLimit = parseInt(params.get('limit') ?? '', 10);
+    const page = Number.isNaN(parsedPage) || parsedPage < 1 ? 1 : parsedPage;
+    const limit = (PAGINATION_OPTIONS as readonly number[]).includes(parsedLimit) ? parsedLimit : DEFAULT_LIMIT;
+    const continent = params.get('continent') || undefined;
+    const currency = params.get('currency') || undefined;
+    const search = params.get('search') || undefined;
 
-    // Update filters
-    setFilters({
-      continent: continentParam || undefined,
-      currency: currencyParam || undefined,
-      search: searchParam || undefined,
-    });
-  }, [searchParams, setPagination, setFilters]);
+    // Return the previous object when nothing changed, so subscribers are not notified for nothing
+    setPagination((prev) => (prev.page === page && prev.limit === limit ? prev : { ...prev, page, limit }));
+    setFilters((prev) =>
+      prev.continent === continent && prev.currency === currency && prev.search === search
+        ? prev
+        : { continent, currency, search },
+    );
+  }, [urlQuery, setPagination, setFilters]);
 };
