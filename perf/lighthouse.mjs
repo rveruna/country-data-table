@@ -1,0 +1,84 @@
+// Builds the app against the mock API, serves it, and runs Lighthouse several times in real Chrome.
+// Usage: node perf/lighthouse.mjs [--runs 5] [--label baseline]
+// Set CHROME_PATH if Chrome is not in the default location.
+import { spawn, spawnSync } from 'node:child_process';
+import { mkdirSync, writeFileSync } from 'node:fs';
+
+const flag = (name, fallback) => {
+  const i = process.argv.indexOf(`--${name}`);
+  return i > -1 ? process.argv[i + 1] : fallback;
+};
+const runs = Number(flag('runs', 5));
+const label = flag('label', 'run');
+const API = 'http://localhost:4000/graphql';
+const APP = 'http://localhost:4173';
+const chrome =
+  process.env.CHROME_PATH ??
+  (process.platform === 'darwin' ? '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' : 'google-chrome');
+
+const median = (xs) => [...xs].sort((a, b) => a - b)[Math.floor(xs.length / 2)];
+
+async function waitFor(url, method = 'GET') {
+  for (let i = 0; i < 60; i++) {
+    try {
+      await fetch(url, { method });
+      return;
+    } catch {
+      await new Promise((r) => setTimeout(r, 250));
+    }
+  }
+  throw new Error(`Timed out waiting for ${url}`);
+}
+
+const build = spawnSync('npm', ['run', 'build'], { env: { ...process.env, VITE_GRAPHQL_ENDPOINT: API }, stdio: 'ignore' });
+if (build.status !== 0) throw new Error('build failed');
+
+const servers = [
+  spawn('node', ['perf/mock-api.mjs', '--delay', '150'], { stdio: 'ignore' }),
+  spawn('npx', ['vite', 'preview', '--port', '4173', '--strictPort'], { stdio: 'ignore' }),
+];
+const stop = () => servers.forEach((s) => s.kill());
+process.on('exit', stop);
+
+try {
+  await waitFor(API, 'OPTIONS');
+  await waitFor(APP);
+
+  const results = [];
+  for (let i = 0; i < runs; i++) {
+    const lh = spawnSync(
+      'npx',
+      ['-y', 'lighthouse', APP, '--output=json', '--output-path=stdout', '--quiet', '--only-categories=performance', '--chrome-flags=--headless=new --no-sandbox'],
+      { env: { ...process.env, CHROME_PATH: chrome }, encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 },
+    );
+    if (lh.status !== 0) throw new Error(`lighthouse failed: ${lh.stderr.slice(0, 300)}`);
+    const r = JSON.parse(lh.stdout);
+    const a = r.audits;
+    results.push({
+      score: Math.round(r.categories.performance.score * 100),
+      fcp: a['first-contentful-paint'].numericValue,
+      lcp: a['largest-contentful-paint'].numericValue,
+      tbt: a['total-blocking-time'].numericValue,
+      cls: a['cumulative-layout-shift'].numericValue,
+      speedIndex: a['speed-index'].numericValue,
+      transferKb: a['total-byte-weight'].numericValue / 1024,
+      scriptKb: (r.audits['resource-summary'].details.items.find((x) => x.resourceType === 'script')?.transferSize ?? 0) / 1024,
+    });
+    process.stdout.write(`  run ${i + 1}/${runs}: score ${results[i].score}, LCP ${Math.round(results[i].lcp)} ms\n`);
+  }
+
+  const med = Object.fromEntries(Object.keys(results[0]).map((k) => [k, median(results.map((x) => x[k]))]));
+  console.log(`\nMedian of ${runs} runs (${label}), mobile emulation, simulated Slow 4G, 150 ms API delay:`);
+  console.log(`  Performance score   ${med.score}`);
+  console.log(`  First Contentful    ${Math.round(med.fcp)} ms`);
+  console.log(`  Largest Contentful  ${Math.round(med.lcp)} ms`);
+  console.log(`  Total Blocking Time ${Math.round(med.tbt)} ms`);
+  console.log(`  Layout shift (CLS)  ${med.cls.toFixed(3)}`);
+  console.log(`  Speed Index         ${Math.round(med.speedIndex)} ms`);
+  console.log(`  Page weight         ${med.transferKb.toFixed(1)} kB (scripts ${med.scriptKb.toFixed(1)} kB)`);
+
+  mkdirSync(new URL('./results/', import.meta.url), { recursive: true });
+  writeFileSync(new URL(`./results/${label}.json`, import.meta.url), JSON.stringify({ label, runs, median: med, all: results }, null, 2));
+} finally {
+  stop();
+}
