@@ -12,7 +12,9 @@ describe('useDebounce', () => {
   });
 
   it('waits for the delay before updating', () => {
-    const { result, rerender } = renderHook(({ value }) => useDebounce(value, 300), { initialProps: { value: 'a' } });
+    const { result, rerender } = renderHook(({ value }) => useDebounce(value, 300), {
+      initialProps: { value: 'a' },
+    });
 
     rerender({ value: 'b' });
     act(() => vi.advanceTimersByTime(299));
@@ -23,7 +25,9 @@ describe('useDebounce', () => {
   });
 
   it('restarts the wait when the value changes again', () => {
-    const { result, rerender } = renderHook(({ value }) => useDebounce(value, 300), { initialProps: { value: 'a' } });
+    const { result, rerender } = renderHook(({ value }) => useDebounce(value, 300), {
+      initialProps: { value: 'a' },
+    });
 
     rerender({ value: 'b' });
     act(() => vi.advanceTimersByTime(200));

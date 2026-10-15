@@ -18,7 +18,9 @@ const API = 'http://localhost:4000/graphql';
 const APP = 'http://localhost:4173';
 const chrome =
   process.env.CHROME_PATH ??
-  (process.platform === 'darwin' ? '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' : 'google-chrome');
+  (process.platform === 'darwin'
+    ? '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
+    : 'google-chrome');
 
 const median = (xs) => [...xs].sort((a, b) => a - b)[Math.floor(xs.length / 2)];
 
@@ -34,7 +36,10 @@ async function waitFor(url, method = 'GET') {
   throw new Error(`Timed out waiting for ${url}`);
 }
 
-const build = spawnSync('npm', ['run', 'build'], { env: { ...process.env, VITE_GRAPHQL_ENDPOINT: API }, stdio: 'ignore' });
+const build = spawnSync('npm', ['run', 'build'], {
+  env: { ...process.env, VITE_GRAPHQL_ENDPOINT: API },
+  stdio: 'ignore',
+});
 if (build.status !== 0) throw new Error('build failed');
 
 const servers = [
@@ -52,7 +57,16 @@ try {
   for (let i = 0; i < runs; i++) {
     const lh = spawnSync(
       'npx',
-      ['-y', 'lighthouse', APP, '--output=json', '--output-path=stdout', '--quiet', '--only-categories=performance,accessibility,best-practices,seo', '--chrome-flags=--headless=new --no-sandbox'],
+      [
+        '-y',
+        'lighthouse',
+        APP,
+        '--output=json',
+        '--output-path=stdout',
+        '--quiet',
+        '--only-categories=performance,accessibility,best-practices,seo',
+        '--chrome-flags=--headless=new --no-sandbox',
+      ],
       { env: { ...process.env, CHROME_PATH: chrome }, encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 },
     );
     if (lh.status !== 0) throw new Error(`lighthouse failed: ${lh.stderr.slice(0, 300)}`);
@@ -69,9 +83,13 @@ try {
       cls: a['cumulative-layout-shift'].numericValue,
       speedIndex: a['speed-index'].numericValue,
       transferKb: a['total-byte-weight'].numericValue / 1024,
-      scriptKb: (r.audits['resource-summary'].details.items.find((x) => x.resourceType === 'script')?.transferSize ?? 0) / 1024,
+      scriptKb:
+        (r.audits['resource-summary'].details.items.find((x) => x.resourceType === 'script')?.transferSize ??
+          0) / 1024,
     });
-    process.stdout.write(`  run ${i + 1}/${runs}: score ${results[i].score}, LCP ${Math.round(results[i].lcp)} ms\n`);
+    process.stdout.write(
+      `  run ${i + 1}/${runs}: score ${results[i].score}, LCP ${Math.round(results[i].lcp)} ms\n`,
+    );
   }
 
   const med = Object.fromEntries(Object.keys(results[0]).map((k) => [k, median(results.map((x) => x[k]))]));
@@ -85,12 +103,19 @@ try {
   console.log(`  Total Blocking Time ${Math.round(med.tbt)} ms`);
   console.log(`  Layout shift (CLS)  ${med.cls.toFixed(3)}`);
   console.log(`  Speed Index         ${Math.round(med.speedIndex)} ms`);
-  console.log(`  Page weight         ${med.transferKb.toFixed(1)} kB (scripts ${med.scriptKb.toFixed(1)} kB)`);
+  console.log(
+    `  Page weight         ${med.transferKb.toFixed(1)} kB (scripts ${med.scriptKb.toFixed(1)} kB)`,
+  );
 
   mkdirSync(new URL('./results/', import.meta.url), { recursive: true });
-  writeFileSync(new URL(`./results/${label}.json`, import.meta.url), JSON.stringify({ label, runs, median: med, all: results }, null, 2));
+  writeFileSync(
+    new URL(`./results/${label}.json`, import.meta.url),
+    JSON.stringify({ label, runs, median: med, all: results }, null, 2),
+  );
 
-  const weak = ['accessibility', 'bestPractices', 'seo'].filter((k) => minQuality !== undefined && med[k] < Number(minQuality));
+  const weak = ['accessibility', 'bestPractices', 'seo'].filter(
+    (k) => minQuality !== undefined && med[k] < Number(minQuality),
+  );
   if (weak.length > 0) {
     console.error(`\n${weak.join(', ')} below the minimum of ${minQuality}.`);
     process.exitCode = 1;

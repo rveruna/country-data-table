@@ -15,19 +15,19 @@ const PaginationBase: React.FC<PaginationProps> = ({ className = '' }) => {
   // A shared link or a smaller result set can leave the page past the end: go back to the first page
   useEffect(() => {
     if (pagination.totalPages > 0 && pagination.page > pagination.totalPages) {
-      setPagination(prev => ({ ...prev, page: 1 }));
+      setPagination((prev) => ({ ...prev, page: 1 }));
     }
   }, [pagination.page, pagination.totalPages, setPagination]);
 
   const handlePageChange = (newPage: number) => {
-    setPagination(prev => ({ ...prev, page: newPage }));
+    setPagination((prev) => ({ ...prev, page: newPage }));
   };
 
   const handleLimitChange = (newLimit: number) => {
-    setPagination(prev => ({ 
-      ...prev, 
-      limit: newLimit, 
-      page: 1 
+    setPagination((prev) => ({
+      ...prev,
+      limit: newLimit,
+      page: 1,
     }));
   };
 
@@ -40,17 +40,21 @@ const PaginationBase: React.FC<PaginationProps> = ({ className = '' }) => {
   const visiblePages = Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i);
 
   return (
-    <div className={`flex flex-col space-y-3 sm:space-y-0 sm:flex-row sm:justify-between sm:items-center ${className}`}>
+    <div
+      className={`flex flex-col space-y-3 sm:space-y-0 sm:flex-row sm:justify-between sm:items-center ${className}`}
+    >
       {/* Entries per page selector */}
       <div className="flex items-center gap-2 justify-center sm:justify-start">
-        <label htmlFor={pageSizeId} className="text-sm text-gray-700 whitespace-nowrap">Show</label>
+        <label htmlFor={pageSizeId} className="text-sm text-gray-700 whitespace-nowrap">
+          Show
+        </label>
         <select
           id={pageSizeId}
           value={pagination.limit}
           onChange={(e) => handleLimitChange(Number(e.target.value))}
           className="border border-gray-300 rounded-md px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
-          {PAGINATION_OPTIONS.map(option => (
+          {PAGINATION_OPTIONS.map((option) => (
             <option key={option} value={option}>
               {option}
             </option>
@@ -76,7 +80,7 @@ const PaginationBase: React.FC<PaginationProps> = ({ className = '' }) => {
           <span className="hidden sm:inline">Previous</span>
           <span className="sm:hidden">←</span>
         </button>
-        
+
         <div className="flex gap-1">
           {pagination.totalPages > maxVisiblePages && startPage > 1 && (
             <>
@@ -86,13 +90,11 @@ const PaginationBase: React.FC<PaginationProps> = ({ className = '' }) => {
               >
                 1
               </button>
-              {startPage > 2 && (
-                <span className="px-2 py-1 text-sm text-gray-500">...</span>
-              )}
+              {startPage > 2 && <span className="px-2 py-1 text-sm text-gray-500">...</span>}
             </>
           )}
-          
-          {visiblePages.map(page => (
+
+          {visiblePages.map((page) => (
             <button
               key={page}
               onClick={() => handlePageChange(page)}
@@ -105,7 +107,7 @@ const PaginationBase: React.FC<PaginationProps> = ({ className = '' }) => {
               {page}
             </button>
           ))}
-          
+
           {pagination.totalPages > maxVisiblePages && endPage < pagination.totalPages && (
             <>
               {endPage < pagination.totalPages - 1 && (

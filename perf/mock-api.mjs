@@ -22,4 +22,8 @@ createServer((req, res) => {
   res.setHeader('access-control-allow-headers', '*');
   if (req.method === 'OPTIONS') return res.writeHead(204).end();
   setTimeout(() => res.writeHead(200, { 'content-type': 'application/json' }).end(body), delay);
-}).listen(port, () => console.log(`mock countries API on http://localhost:${port}/graphql (${countries.length} countries, ${delay} ms delay)`));
+}).listen(port, () =>
+  console.log(
+    `mock countries API on http://localhost:${port}/graphql (${countries.length} countries, ${delay} ms delay)`,
+  ),
+);

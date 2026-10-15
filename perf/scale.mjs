@@ -15,7 +15,9 @@ const API = 'http://localhost:4000/graphql';
 const APP = 'http://localhost:4173';
 const chrome =
   process.env.CHROME_PATH ??
-  (process.platform === 'darwin' ? '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' : 'google-chrome');
+  (process.platform === 'darwin'
+    ? '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
+    : 'google-chrome');
 const SIZES = [1, 10, 100]; // multiples of the 250 real countries
 const SAMPLES = 9;
 const median = (xs) => [...xs].sort((a, b) => a - b)[Math.floor(xs.length / 2)];
@@ -32,7 +34,10 @@ async function waitFor(url, method = 'GET') {
   throw new Error(`Timed out waiting for ${url}`);
 }
 
-const build = spawnSync('npm', ['run', 'build'], { env: { ...process.env, VITE_GRAPHQL_ENDPOINT: API }, stdio: 'ignore' });
+const build = spawnSync('npm', ['run', 'build'], {
+  env: { ...process.env, VITE_GRAPHQL_ENDPOINT: API },
+  stdio: 'ignore',
+});
 if (build.status !== 0) throw new Error('build failed');
 const preview = spawn('npx', ['vite', 'preview', '--port', '4173', '--strictPort'], { stdio: 'ignore' });
 let mock;
@@ -86,7 +91,9 @@ try {
   const results = [];
 
   for (const multiply of SIZES) {
-    mock = spawn('node', ['perf/mock-api.mjs', '--delay', '0', '--multiply', String(multiply)], { stdio: 'ignore' });
+    mock = spawn('node', ['perf/mock-api.mjs', '--delay', '0', '--multiply', String(multiply)], {
+      stdio: 'ignore',
+    });
     await waitFor(API, 'OPTIONS');
 
     const browser = await chromium.launch({ executablePath: chrome, headless: true, args: ['--no-sandbox'] });
@@ -110,10 +117,14 @@ try {
       return Math.round(median(xs) * 10) / 10;
     };
 
-    const filter = await sample((i) => page.evaluate(([v]) => window.__timeSelect('Continent', v), [i % 2 === 0 ? 'Europe' : '']));
+    const filter = await sample((i) =>
+      page.evaluate(([v]) => window.__timeSelect('Continent', v), [i % 2 === 0 ? 'Europe' : '']),
+    );
     await page.evaluate(() => window.__setSelect('Continent', ''));
     await page.evaluate(() => window.__frame());
-    const pageSize = await sample((i) => page.evaluate(([v]) => window.__timeSelect('Show', v), [i % 2 === 0 ? '100' : '10']));
+    const pageSize = await sample((i) =>
+      page.evaluate(([v]) => window.__timeSelect('Show', v), [i % 2 === 0 ? '100' : '10']),
+    );
     const next = await sample(async () => {
       await page.evaluate(() => window.__setSelect('Show', '10'));
       await page.evaluate(() => window.__frame());
@@ -128,13 +139,23 @@ try {
       nodes: document.querySelectorAll('*').length,
     }));
 
-    results.push({ countries: 250 * multiply, loadMs, filterMs: filter, pageSizeMs: pageSize, nextMs: next, searchMs: search, ...dom });
+    results.push({
+      countries: 250 * multiply,
+      loadMs,
+      filterMs: filter,
+      pageSizeMs: pageSize,
+      nextMs: next,
+      searchMs: search,
+      ...dom,
+    });
     await browser.close();
     mock.kill();
     await new Promise((r) => setTimeout(r, 400));
   }
 
-  console.log(`\nMedian of ${SAMPLES} samples in Chrome, ${cpu}x CPU slowdown (about a mid-range phone). Milliseconds until the work for each interaction has finished (paint excluded):\n`);
+  console.log(
+    `\nMedian of ${SAMPLES} samples in Chrome, ${cpu}x CPU slowdown (about a mid-range phone). Milliseconds until the work for each interaction has finished (paint excluded):\n`,
+  );
   console.log('countries | load  | filter | page size | next page | search* | DOM rows | DOM nodes');
   console.log('----------|-------|--------|-----------|-----------|---------|----------|----------');
   for (const r of results) {

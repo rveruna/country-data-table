@@ -14,8 +14,12 @@ function Harness() {
   const setPagination = useSetRecoilState(paginationState);
   return (
     <div>
-      <pre data-testid="state">{JSON.stringify({ page: pagination.page, limit: pagination.limit, ...filters })}</pre>
-      <button onClick={() => setFilters({ continent: 'Europe', currency: 'EUR', search: 'ger' })}>set filters</button>
+      <pre data-testid="state">
+        {JSON.stringify({ page: pagination.page, limit: pagination.limit, ...filters })}
+      </pre>
+      <button onClick={() => setFilters({ continent: 'Europe', currency: 'EUR', search: 'ger' })}>
+        set filters
+      </button>
       <button onClick={() => setPagination((p) => ({ ...p, page: 4, limit: 50 }))}>set pagination</button>
     </div>
   );

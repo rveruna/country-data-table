@@ -15,12 +15,12 @@ module.exports = {
     // Off in the recommended preset. It is what catches icon-only buttons with no accessible name.
     'jsx-a11y/control-has-associated-label': [
       'error',
-      { ignoreElements: ['audio', 'canvas', 'embed', 'input', 'textarea', 'tr', 'td', 'th', 'video'], includeRoles: ['alert', 'dialog'] },
+      {
+        ignoreElements: ['audio', 'canvas', 'embed', 'input', 'textarea', 'tr', 'td', 'th', 'video'],
+        includeRoles: ['alert', 'dialog'],
+      },
     ],
-    'react-refresh/only-export-components': [
-      'warn',
-      { allowConstantExport: true },
-    ],
+    'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
   },
   overrides: [
     {
@@ -29,4 +29,4 @@ module.exports = {
       rules: { 'react-refresh/only-export-components': 'off' },
     },
   ],
-}
+};

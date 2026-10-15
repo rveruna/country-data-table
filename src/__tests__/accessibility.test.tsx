@@ -46,7 +46,10 @@ describe('accessibility (axe-core)', () => {
   });
 
   it('has no violations when nothing matches', async () => {
-    const { container } = renderWithProviders(<App />, { route: '/?search=atlantis', mocks: [countriesQueryMock(countries)] });
+    const { container } = renderWithProviders(<App />, {
+      route: '/?search=atlantis',
+      mocks: [countriesQueryMock(countries)],
+    });
     await screen.findByText('No countries found');
     await expectNoAxeViolations(container);
   });

@@ -14,7 +14,10 @@ interface RequestOptions {
  * Sends a GraphQL query with fetch and returns its data. Throws an Error with a readable message when the
  * request fails, the server answers with an error status, or the response carries GraphQL errors.
  */
-export async function graphqlRequest<T>(query: string, { signal, endpoint = GRAPHQL_ENDPOINT }: RequestOptions = {}): Promise<T> {
+export async function graphqlRequest<T>(
+  query: string,
+  { signal, endpoint = GRAPHQL_ENDPOINT }: RequestOptions = {},
+): Promise<T> {
   const response = await fetch(endpoint, {
     method: 'POST',
     headers: { 'content-type': 'application/json', accept: 'application/json' },

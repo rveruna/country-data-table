@@ -38,23 +38,24 @@ export const filteredCountriesSelector = selector({
     const filters = get(filtersState);
 
     return countries.filter((country) => {
-      const matchesContinent = !filters.continent || 
-        country.continent.name === filters.continent;
-      
-      const matchesCurrency = !filters.currency || 
-        (country.currency && country.currency.includes(filters.currency));
-      
-      const matchesSearch = !filters.search || (() => {
-        const searchTerm = filters.search.toLowerCase().trim();
-        const countryName = country.name.toLowerCase();
-        const countryCode = country.code.toLowerCase();
-        
-        // Exact match for country code
-        if (countryCode === searchTerm) return true;
-        
-        // Any part of the name, which also covers the start of any word in it
-        return countryName.includes(searchTerm);
-      })();
+      const matchesContinent = !filters.continent || country.continent.name === filters.continent;
+
+      const matchesCurrency =
+        !filters.currency || (country.currency && country.currency.includes(filters.currency));
+
+      const matchesSearch =
+        !filters.search ||
+        (() => {
+          const searchTerm = filters.search.toLowerCase().trim();
+          const countryName = country.name.toLowerCase();
+          const countryCode = country.code.toLowerCase();
+
+          // Exact match for country code
+          if (countryCode === searchTerm) return true;
+
+          // Any part of the name, which also covers the start of any word in it
+          return countryName.includes(searchTerm);
+        })();
 
       return matchesContinent && matchesCurrency && matchesSearch;
     });

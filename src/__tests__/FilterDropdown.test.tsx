@@ -7,7 +7,15 @@ const options = ['Africa', 'Asia', 'Europe'];
 
 describe('FilterDropdown', () => {
   it('shows the placeholder first, then every option', () => {
-    render(<FilterDropdown label="Continent" value={undefined} options={options} onChange={vi.fn()} placeholder="All Continents" />);
+    render(
+      <FilterDropdown
+        label="Continent"
+        value={undefined}
+        options={options}
+        onChange={vi.fn()}
+        placeholder="All Continents"
+      />,
+    );
 
     const labels = screen.getAllByRole('option').map((o) => o.textContent);
     expect(labels).toEqual(['All Continents', 'Africa', 'Asia', 'Europe']);

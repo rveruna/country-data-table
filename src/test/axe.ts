@@ -10,6 +10,8 @@ export async function expectNoAxeViolations(container: HTMLElement) {
     runOnly: { type: 'tag', values: ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'best-practice'] },
     rules: { 'color-contrast': { enabled: false } },
   });
-  const summary = results.violations.map((v) => `${v.id} (${v.impact}): ${v.help} [${v.nodes.map((n) => n.target.join(' ')).join(' | ')}]`);
+  const summary = results.violations.map(
+    (v) => `${v.id} (${v.impact}): ${v.help} [${v.nodes.map((n) => n.target.join(' ')).join(' | ')}]`,
+  );
   expect(summary).toEqual([]);
 }

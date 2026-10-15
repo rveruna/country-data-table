@@ -191,7 +191,9 @@ describe('NetworkStatus', () => {
 
 describe('TableHeader', () => {
   const setup = (n: number) =>
-    renderWithProviders(<TableHeader />, { initializeState: (s) => s.set(countriesState, countries.slice(0, n)) });
+    renderWithProviders(<TableHeader />, {
+      initializeState: (s) => s.set(countriesState, countries.slice(0, n)),
+    });
 
   it('shows the number of countries found', () => {
     setup(5);

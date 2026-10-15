@@ -55,7 +55,9 @@ export const useUrlState = () => {
     const parsedPage = parseInt(params.get('page') ?? '', 10);
     const parsedLimit = parseInt(params.get('limit') ?? '', 10);
     const page = Number.isNaN(parsedPage) || parsedPage < 1 ? 1 : parsedPage;
-    const limit = (PAGINATION_OPTIONS as readonly number[]).includes(parsedLimit) ? parsedLimit : DEFAULT_LIMIT;
+    const limit = (PAGINATION_OPTIONS as readonly number[]).includes(parsedLimit)
+      ? parsedLimit
+      : DEFAULT_LIMIT;
     const continent = params.get('continent') || undefined;
     const currency = params.get('currency') || undefined;
     const search = params.get('search') || undefined;

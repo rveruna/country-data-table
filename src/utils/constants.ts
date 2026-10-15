@@ -2,12 +2,12 @@ export const PAGINATION_OPTIONS = [10, 20, 50, 100] as const;
 
 export const CONTINENTS = [
   'Africa',
-  'Antarctica', 
+  'Antarctica',
   'Asia',
   'Europe',
   'North America',
   'Oceania',
-  'South America'
+  'South America',
 ] as const;
 
 export const DEFAULT_PAGINATION = {
