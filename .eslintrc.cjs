@@ -5,11 +5,18 @@ module.exports = {
     'eslint:recommended',
     'plugin:@typescript-eslint/recommended',
     'plugin:react-hooks/recommended',
+    'plugin:jsx-a11y/recommended',
+    'prettier',
   ],
   ignorePatterns: ['dist', '.eslintrc.cjs'],
   parser: '@typescript-eslint/parser',
   plugins: ['react-refresh'],
   rules: {
+    // Off in the recommended preset. It is what catches icon-only buttons with no accessible name.
+    'jsx-a11y/control-has-associated-label': [
+      'error',
+      { ignoreElements: ['audio', 'canvas', 'embed', 'input', 'textarea', 'tr', 'td', 'th', 'video'], includeRoles: ['alert', 'dialog'] },
+    ],
     'react-refresh/only-export-components': [
       'warn',
       { allowConstantExport: true },
