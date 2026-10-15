@@ -17,4 +17,5 @@ export const DEFAULT_PAGINATION = {
   totalPages: 0
 };
 
-export const GRAPHQL_ENDPOINT = 'https://countries.trevorblades.com/graphql';
+export const GRAPHQL_ENDPOINT: string =
+  import.meta.env.VITE_GRAPHQL_ENDPOINT ?? 'https://countries.trevorblades.com/graphql';

@@ -1,0 +1,66 @@
+{
+  "label": "baseline",
+  "runs": 5,
+  "median": {
+    "score": 99,
+    "fcp": 1651.8461,
+    "lcp": 1801.8461,
+    "tbt": 1,
+    "cls": 0,
+    "speedIndex": 1651.8461,
+    "transferKb": 166.0849609375,
+    "scriptKb": 139.7763671875
+  },
+  "all": [
+    {
+      "score": 97,
+      "fcp": 1654.099,
+      "lcp": 2362.25135,
+      "tbt": 0,
+      "cls": 0,
+      "speedIndex": 1654.099,
+      "transferKb": 166.0849609375,
+      "scriptKb": 139.7763671875
+    },
+    {
+      "score": 99,
+      "fcp": 1651.8461,
+      "lcp": 1801.8461,
+      "tbt": 1,
+      "cls": 0,
+      "speedIndex": 1651.8461,
+      "transferKb": 166.0849609375,
+      "scriptKb": 139.7763671875
+    },
+    {
+      "score": 99,
+      "fcp": 1651.6085,
+      "lcp": 1801.6085,
+      "tbt": 1,
+      "cls": 0,
+      "speedIndex": 1651.6085,
+      "transferKb": 166.0849609375,
+      "scriptKb": 139.7763671875
+    },
+    {
+      "score": 99,
+      "fcp": 1653.7887,
+      "lcp": 1803.7887,
+      "tbt": 4,
+      "cls": 0,
+      "speedIndex": 1653.7887,
+      "transferKb": 166.0849609375,
+      "scriptKb": 139.7763671875
+    },
+    {
+      "score": 99,
+      "fcp": 1651.6322,
+      "lcp": 1801.6322,
+      "tbt": 1,
+      "cls": 0,
+      "speedIndex": 1651.6322,
+      "transferKb": 166.0849609375,
+      "scriptKb": 139.7763671875
+    }
+  ]
+}

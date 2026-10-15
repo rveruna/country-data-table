@@ -1,0 +1,66 @@
+{
+  "label": "prototype-no-apollo",
+  "runs": 5,
+  "median": {
+    "score": 100,
+    "fcp": 1351.7533,
+    "lcp": 1501.7533,
+    "tbt": 0,
+    "cls": 0,
+    "speedIndex": 1351.7533,
+    "transferKb": 110.3369140625,
+    "scriptKb": 84.0283203125
+  },
+  "all": [
+    {
+      "score": 100,
+      "fcp": 1352.6706,
+      "lcp": 1502.6706,
+      "tbt": 0,
+      "cls": 0,
+      "speedIndex": 1352.6706,
+      "transferKb": 110.3369140625,
+      "scriptKb": 84.0283203125
+    },
+    {
+      "score": 100,
+      "fcp": 1351.8933,
+      "lcp": 1501.8933,
+      "tbt": 0,
+      "cls": 0,
+      "speedIndex": 1351.8933,
+      "transferKb": 110.3369140625,
+      "scriptKb": 84.0283203125
+    },
+    {
+      "score": 100,
+      "fcp": 1351.7533,
+      "lcp": 1501.7533,
+      "tbt": 0,
+      "cls": 0,
+      "speedIndex": 1351.7533,
+      "transferKb": 110.3369140625,
+      "scriptKb": 84.0283203125
+    },
+    {
+      "score": 100,
+      "fcp": 1351.4216,
+      "lcp": 1501.4216,
+      "tbt": 0,
+      "cls": 0,
+      "speedIndex": 1351.4216,
+      "transferKb": 110.3369140625,
+      "scriptKb": 84.0283203125
+    },
+    {
+      "score": 100,
+      "fcp": 1351.4652,
+      "lcp": 1501.4652,
+      "tbt": 0,
+      "cls": 0,
+      "speedIndex": 1351.4652,
+      "transferKb": 110.3369140625,
+      "scriptKb": 84.0283203125
+    }
+  ]
+}

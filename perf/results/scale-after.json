@@ -1,0 +1,35 @@
+{
+  "cpu": 4,
+  "results": [
+    {
+      "countries": 250,
+      "loadMs": 241,
+      "filterMs": 7.4,
+      "pageSizeMs": 14.5,
+      "nextMs": 3,
+      "searchMs": 5.1,
+      "rows": 10,
+      "nodes": 375
+    },
+    {
+      "countries": 2500,
+      "loadMs": 348,
+      "filterMs": 8,
+      "pageSizeMs": 13.4,
+      "nextMs": 3.1,
+      "searchMs": 4.9,
+      "rows": 10,
+      "nodes": 375
+    },
+    {
+      "countries": 25000,
+      "loadMs": 1349,
+      "filterMs": 12.2,
+      "pageSizeMs": 11.5,
+      "nextMs": 3,
+      "searchMs": 9.5,
+      "rows": 10,
+      "nodes": 375
+    }
+  ]
+}
