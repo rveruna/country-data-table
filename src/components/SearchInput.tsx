@@ -1,6 +1,6 @@
 import { useState, useEffect, useId, memo } from 'react';
-import { useRecoilValue } from 'recoil';
-import { filtersState } from '../store/countryStore';
+import { useAtomValue } from 'jotai';
+import { filtersAtom } from '../store/countryStore';
 import { useDebounce } from '../hooks/useDebounce';
 import { useFilterActions } from '../hooks/useFilterActions';
 
@@ -9,7 +9,7 @@ interface SearchInputProps {
 }
 
 const SearchInputBase: React.FC<SearchInputProps> = ({ className = '' }) => {
-  const filters = useRecoilValue(filtersState);
+  const filters = useAtomValue(filtersAtom);
   const updateFilters = useFilterActions();
   const inputId = useId();
   const [searchTerm, setSearchTerm] = useState(filters.search || '');

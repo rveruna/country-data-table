@@ -19,10 +19,10 @@
     "prepare": "husky"
   },
   "dependencies": {
+    "jotai": "^3.0.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-router-dom": "^7.18.4",
-    "recoil": "^0.7.7"
+    "react-router-dom": "^7.18.4"
   },
   "devDependencies": {
     "@amiceli/vitest-cucumber": "^8.0.0",

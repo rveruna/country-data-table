@@ -1,16 +1,16 @@
 import { describe, expect, it } from 'vitest';
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import type { MutableSnapshot } from 'recoil';
+import type { Store } from 'jotai';
 import { Pagination } from '../components/Pagination';
-import { countriesState, paginationState } from '../store/countryStore';
+import { countriesAtom, paginationAtom } from '../store/countryStore';
 import { makeCountries } from '../test/fixtures';
 import { renderWithProviders } from '../test/utils';
 
 const setup = (total: number, page = 1, limit = 10) => {
-  const init = (s: MutableSnapshot) => {
-    s.set(countriesState, makeCountries(total));
-    s.set(paginationState, { page, limit });
+  const init = (s: Store) => {
+    s.set(countriesAtom, makeCountries(total));
+    s.set(paginationAtom, { page, limit });
   };
   return renderWithProviders(<Pagination />, { initializeState: init });
 };

@@ -1,6 +1,6 @@
 import { useEffect, useId, memo } from 'react';
-import { useRecoilValue, useSetRecoilState } from 'recoil';
-import { paginationState, paginationInfoSelector } from '../store/countryStore';
+import { useAtomValue, useSetAtom } from 'jotai';
+import { paginationAtom, paginationInfoAtom } from '../store/countryStore';
 import { PAGINATION_OPTIONS } from '../utils/constants';
 
 interface PaginationProps {
@@ -8,8 +8,8 @@ interface PaginationProps {
 }
 
 const PaginationBase: React.FC<PaginationProps> = ({ className = '' }) => {
-  const pagination = useRecoilValue(paginationInfoSelector);
-  const setPagination = useSetRecoilState(paginationState);
+  const pagination = useAtomValue(paginationInfoAtom);
+  const setPagination = useSetAtom(paginationAtom);
   const pageSizeId = useId();
 
   // A shared link or a smaller result set can leave the page past the end: go back to the first page

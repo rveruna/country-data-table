@@ -1,30 +1,28 @@
-import { snapshot_UNSTABLE, type RecoilValue } from 'recoil';
+import { createStore, type Atom } from 'jotai';
 import { expect } from 'vitest';
 import { loadFeature } from '@amiceli/vitest-cucumber';
 import {
-  countriesState,
-  filtersState,
-  paginatedCountriesSelector,
-  paginationInfoSelector,
-  paginationState,
+  countriesAtom,
+  filtersAtom,
+  paginatedCountriesAtom,
+  paginationInfoAtom,
+  paginationAtom,
 } from '../store/countryStore';
 import type { Country, CountryFilters } from '../types/country';
 import { makeCountries } from '../test/fixtures';
 import { Steps, runRules } from './support/runRules';
 
-// Bound straight to the paging selectors, with no rendering.
+// Bound straight to the paging atoms through a store, with no rendering.
 let list: Country[] = [];
 let filters: CountryFilters = {};
 let pagination = { page: 1, limit: 10 };
 
-function read<T>(selector: RecoilValue<T>): T {
-  return snapshot_UNSTABLE((s) => {
-    s.set(countriesState, list);
-    s.set(filtersState, filters);
-    s.set(paginationState, pagination);
-  })
-    .getLoadable(selector)
-    .getValue();
+function read<T>(target: Atom<T>): T {
+  const store = createStore();
+  store.set(countriesAtom, list);
+  store.set(filtersAtom, filters);
+  store.set(paginationAtom, pagination);
+  return store.get(target);
 }
 
 // makeCountries names them "Country 001", "Country 002" and so on.
@@ -48,17 +46,17 @@ const steps = new Steps()
   .define(
     'the page shows {int} rows, from country {int} to country {int}',
     (rows: number, first: number, last: number) => {
-      const page = read(paginatedCountriesSelector).map((c) => c.name);
+      const page = read(paginatedCountriesAtom).map((c) => c.name);
       expect(page).toHaveLength(rows);
       expect(page[0]).toBe(name(first));
       expect(page[page.length - 1]).toBe(name(last));
     },
   )
   .define('there are {int} pages', (pages: number) => {
-    expect(read(paginationInfoSelector).totalPages).toBe(pages);
+    expect(read(paginationInfoAtom).totalPages).toBe(pages);
   })
   .define('there are {int} matching countries on {int} pages', (total: number, pages: number) => {
-    expect(read(paginationInfoSelector)).toMatchObject({ total, totalPages: pages });
+    expect(read(paginationInfoAtom)).toMatchObject({ total, totalPages: pages });
   });
 
 runRules(await loadFeature('./paging.feature'), steps);

@@ -1,15 +1,15 @@
 import { useCallback, useEffect, useState } from 'react';
-import { useRecoilState, useSetRecoilState } from 'recoil';
+import { useAtom, useSetAtom } from 'jotai';
 import { GET_COUNTRIES } from '../graphql/queries';
 import { graphqlRequest } from '../lib/graphql';
 import { CountriesData } from '../types/country';
-import { countriesState, errorState, loadingState } from '../store/countryStore';
+import { countriesAtom, errorAtom, loadingAtom } from '../store/countryStore';
 
 /** Loads the countries once, and again whenever `refetch` is called. */
 export const useCountries = () => {
-  const setCountries = useSetRecoilState(countriesState);
-  const [loading, setLoading] = useRecoilState(loadingState);
-  const [error, setError] = useRecoilState(errorState);
+  const setCountries = useSetAtom(countriesAtom);
+  const [loading, setLoading] = useAtom(loadingAtom);
+  const [error, setError] = useAtom(errorAtom);
   const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {

@@ -1,15 +1,15 @@
 import { describe, expect, it } from 'vitest';
 import { screen } from '@testing-library/react';
 import { SearchResults } from '../components/SearchResults';
-import { countriesState, filtersState } from '../store/countryStore';
+import { countriesAtom, filtersAtom } from '../store/countryStore';
 import { countries } from '../test/fixtures';
 import { renderWithProviders } from '../test/utils';
 
 const setup = (search: string | undefined) =>
   renderWithProviders(<SearchResults />, {
     initializeState: (s) => {
-      s.set(countriesState, countries);
-      s.set(filtersState, { search });
+      s.set(countriesAtom, countries);
+      s.set(filtersAtom, { search });
     },
   });
 

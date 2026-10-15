@@ -1,28 +1,31 @@
 import { describe, expect, it } from 'vitest';
-import { snapshot_UNSTABLE, type MutableSnapshot, type RecoilValue } from 'recoil';
+import { createStore, type Atom, type Store } from 'jotai';
 import {
-  countriesState,
-  filteredCountriesSelector,
-  filtersState,
-  loadingState,
-  paginatedCountriesSelector,
-  paginationState,
-  uniqueCurrenciesSelector,
+  countriesAtom,
+  filteredCountriesAtom,
+  filtersAtom,
+  loadingAtom,
+  paginatedCountriesAtom,
+  paginationAtom,
+  uniqueCurrenciesAtom,
 } from '../store/countryStore';
 import type { CountryFilters } from '../types/country';
 import { countries, makeCountries } from '../test/fixtures';
 
-function read<T>(selector: RecoilValue<T>, init: (s: MutableSnapshot) => void): T {
-  return snapshot_UNSTABLE(init).getLoadable(selector).getValue();
+/** Reads an atom from a fresh store, after `init` has set the atoms it depends on. */
+function read<T>(target: Atom<T>, init: (s: Store) => void): T {
+  const store = createStore();
+  init(store);
+  return store.get(target);
 }
 
 const filtered = (filters: CountryFilters) =>
-  read(filteredCountriesSelector, (s) => {
-    s.set(countriesState, countries);
-    s.set(filtersState, filters);
+  read(filteredCountriesAtom, (s) => {
+    s.set(countriesAtom, countries);
+    s.set(filtersAtom, filters);
   }).map((c) => c.code);
 
-describe('filteredCountriesSelector', () => {
+describe('filteredCountriesAtom', () => {
   it('returns everything when no filter is set', () => {
     expect(filtered({})).toHaveLength(countries.length);
   });
@@ -84,11 +87,11 @@ describe('filteredCountriesSelector', () => {
   });
 });
 
-describe('paginatedCountriesSelector', () => {
+describe('paginatedCountriesAtom', () => {
   const page = (pageNumber: number, limit: number, list = makeCountries(25)) =>
-    read(paginatedCountriesSelector, (s) => {
-      s.set(countriesState, list);
-      s.set(paginationState, { page: pageNumber, limit });
+    read(paginatedCountriesAtom, (s) => {
+      s.set(countriesAtom, list);
+      s.set(paginationAtom, { page: pageNumber, limit });
     }).map((c) => c.code);
 
   it('returns the first page', () => {
@@ -108,17 +111,17 @@ describe('paginatedCountriesSelector', () => {
   });
 
   it('paginates the filtered list, not the full one', () => {
-    const result = read(paginatedCountriesSelector, (s) => {
-      s.set(countriesState, countries);
-      s.set(filtersState, { continent: 'Europe' });
-      s.set(paginationState, { page: 1, limit: 2 });
+    const result = read(paginatedCountriesAtom, (s) => {
+      s.set(countriesAtom, countries);
+      s.set(filtersAtom, { continent: 'Europe' });
+      s.set(paginationAtom, { page: 1, limit: 2 });
     });
     expect(result.map((c) => c.code)).toEqual(['GB', 'FR']);
   });
 });
 
-describe('uniqueCurrenciesSelector', () => {
-  const currencies = read(uniqueCurrenciesSelector, (s) => s.set(countriesState, countries));
+describe('uniqueCurrenciesAtom', () => {
+  const currencies = read(uniqueCurrenciesAtom, (s) => s.set(countriesAtom, countries));
 
   it('lists each currency once, sorted', () => {
     expect(currencies).toEqual([...new Set(currencies)].sort());
@@ -137,8 +140,8 @@ describe('uniqueCurrenciesSelector', () => {
   });
 
   it('trims whitespace around each currency', () => {
-    const result = read(uniqueCurrenciesSelector, (s) =>
-      s.set(countriesState, [{ name: 'X', code: 'XX', continent: { name: 'Asia' }, currency: 'AAA, BBB' }]),
+    const result = read(uniqueCurrenciesAtom, (s) =>
+      s.set(countriesAtom, [{ name: 'X', code: 'XX', continent: { name: 'Asia' }, currency: 'AAA, BBB' }]),
     );
     expect(result).toEqual(['AAA', 'BBB']);
   });
@@ -146,6 +149,6 @@ describe('uniqueCurrenciesSelector', () => {
 
 describe('initial state', () => {
   it('starts out loading, so the first paint is the placeholder and not an empty table', () => {
-    expect(read(loadingState, () => {})).toBe(true);
+    expect(read(loadingAtom, () => {})).toBe(true);
   });
 });

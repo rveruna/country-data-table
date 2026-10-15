@@ -1,6 +1,6 @@
 import { memo } from 'react';
-import { useRecoilValue } from 'recoil';
-import { filtersState, uniqueCurrenciesSelector } from '../store/countryStore';
+import { useAtomValue } from 'jotai';
+import { filtersAtom, uniqueCurrenciesAtom } from '../store/countryStore';
 import { FilterDropdown } from './FilterDropdown';
 import { SearchInput } from './SearchInput';
 import { SearchResults } from './SearchResults';
@@ -12,9 +12,9 @@ interface FilterControlsProps {
 }
 
 const FilterControlsBase: React.FC<FilterControlsProps> = ({ className = '' }) => {
-  const filters = useRecoilValue(filtersState);
+  const filters = useAtomValue(filtersAtom);
   const updateFilters = useFilterActions();
-  const uniqueCurrencies = useRecoilValue(uniqueCurrenciesSelector);
+  const uniqueCurrencies = useAtomValue(uniqueCurrenciesAtom);
 
   const handleContinentChange = (continent: string | undefined) => {
     updateFilters((prev) => ({ ...prev, continent }));

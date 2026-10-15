@@ -1,15 +1,15 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { act, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { useAtomValue, useSetAtom } from 'jotai';
 import { SearchInput } from '../components/SearchInput';
-import { filtersState, paginationState } from '../store/countryStore';
+import { filtersAtom, paginationAtom } from '../store/countryStore';
 import { renderWithProviders } from '../test/utils';
 
 function Probe() {
-  const filters = useRecoilValue(filtersState);
-  const pagination = useRecoilValue(paginationState);
-  const setFilters = useSetRecoilState(filtersState);
+  const filters = useAtomValue(filtersAtom);
+  const pagination = useAtomValue(paginationAtom);
+  const setFilters = useSetAtom(filtersAtom);
   return (
     <div>
       <div data-testid="search">{filters.search ?? ''}</div>
@@ -35,7 +35,7 @@ describe('SearchInput', () => {
         <SearchInput />
         <Probe />
       </>,
-      { initializeState: (s) => s.set(paginationState, { page: initialPage, limit: 10 }) },
+      { initializeState: (s) => s.set(paginationAtom, { page: initialPage, limit: 10 }) },
     );
   }
 

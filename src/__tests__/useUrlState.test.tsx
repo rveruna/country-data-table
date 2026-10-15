@@ -1,17 +1,17 @@
 import { describe, expect, it } from 'vitest';
 import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { useAtomValue, useSetAtom } from 'jotai';
 import { useUrlState } from '../hooks/useUrlState';
-import { filtersState, paginationState } from '../store/countryStore';
+import { filtersAtom, paginationAtom } from '../store/countryStore';
 import { renderWithProviders } from '../test/utils';
 
 function Harness() {
   useUrlState();
-  const pagination = useRecoilValue(paginationState);
-  const filters = useRecoilValue(filtersState);
-  const setFilters = useSetRecoilState(filtersState);
-  const setPagination = useSetRecoilState(paginationState);
+  const pagination = useAtomValue(paginationAtom);
+  const filters = useAtomValue(filtersAtom);
+  const setFilters = useSetAtom(filtersAtom);
+  const setPagination = useSetAtom(paginationAtom);
   return (
     <div>
       <pre data-testid="state">

@@ -1,6 +1,6 @@
 import { memo } from 'react';
-import { useRecoilValue } from 'recoil';
-import { paginatedCountriesSelector } from '../store/countryStore';
+import { useAtomValue } from 'jotai';
+import { paginatedCountriesAtom } from '../store/countryStore';
 import { Country } from '../types/country';
 
 interface CountryTableProps {
@@ -8,7 +8,7 @@ interface CountryTableProps {
 }
 
 const CountryTableBase: React.FC<CountryTableProps> = ({ className = '' }) => {
-  const paginatedCountries = useRecoilValue(paginatedCountriesSelector);
+  const paginatedCountries = useAtomValue(paginatedCountriesAtom);
 
   return (
     <div className={`overflow-x-auto ${className}`}>

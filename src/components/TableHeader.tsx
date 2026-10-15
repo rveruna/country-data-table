@@ -1,13 +1,13 @@
 import { memo } from 'react';
-import { useRecoilValue } from 'recoil';
-import { filteredCountriesSelector } from '../store/countryStore';
+import { useAtomValue } from 'jotai';
+import { filteredCountriesAtom } from '../store/countryStore';
 
 interface TableHeaderProps {
   className?: string;
 }
 
 const TableHeaderBase: React.FC<TableHeaderProps> = ({ className = '' }) => {
-  const filteredCountries = useRecoilValue(filteredCountriesSelector);
+  const filteredCountries = useAtomValue(filteredCountriesAtom);
 
   return (
     <div className={`bg-white rounded-lg shadow-xs border border-gray-200 p-3 sm:p-4 ${className}`}>
