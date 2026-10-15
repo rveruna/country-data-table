@@ -3,6 +3,8 @@ import { describeFeature, type StepTest, type loadFeature } from '@amiceli/vites
 type Feature = Awaited<ReturnType<typeof loadFeature>>;
 type Scenario = Feature['scenarii'][number];
 type Handler = (...args: never[]) => unknown;
+// The keywords a feature file can use. The parser also has a generic `Step` type, which only defineSteps produces.
+type Keyword = Exclude<keyof StepTest, 'context'>;
 
 /**
  * Step definitions written once, as patterns, the way Cucumber does it. `{string}` matches a quoted value
@@ -43,7 +45,7 @@ const fill = (text: string, example: Record<string, string>) =>
 
 function bind(scenario: Scenario, test: StepTest, steps: Steps, example: Record<string, string> = {}) {
   for (const step of scenario.steps) {
-    test[step.type](step.details, async () => {
+    test[step.type as Keyword](step.details, async () => {
       await steps.run(fill(step.details, example));
     });
   }

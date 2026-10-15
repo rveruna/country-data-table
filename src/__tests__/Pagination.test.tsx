@@ -87,6 +87,16 @@ describe('Pagination', () => {
       expect(screen.getAllByText('...')).toHaveLength(2);
     });
 
+    it('jumps to the last page and back to the first', async () => {
+      setup(200, 10);
+
+      await userEvent.click(button('20'));
+      expect(screen.getByText('Showing 191 to 200 of 200 entries')).toBeInTheDocument();
+
+      await userEvent.click(button('1'));
+      expect(screen.getByText('Showing 1 to 10 of 200 entries')).toBeInTheDocument();
+    });
+
     it('drops the leading ellipsis near the start', () => {
       setup(200, 1);
 
