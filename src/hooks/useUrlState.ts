@@ -33,8 +33,13 @@ export const useUrlState = () => {
   const urlQuery = searchParams.toString();
   const stateQuery = toQuery(pagination, filters);
   const latest = useRef({ urlQuery, stateQuery });
-  latest.current = { urlQuery, stateQuery };
   const mounted = useRef(false);
+
+  // Lets the effects below compare against the other side without depending on it. Declared first, so it
+  // runs before them in every commit and they see this render's values.
+  useEffect(() => {
+    latest.current = { urlQuery, stateQuery };
+  });
 
   // State to URL. Skipped on first mount: then the URL is the truth and the state has not read it yet.
   useEffect(() => {

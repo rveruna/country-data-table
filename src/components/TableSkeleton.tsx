@@ -3,6 +3,14 @@ interface TableSkeletonProps {
   className?: string;
 }
 
+/**
+ * A bar width between min and min + spread percent that varies from row to row and column to column, so the
+ * placeholder looks like text. Derived from the position rather than random, so rendering stays pure and the
+ * bars do not jump about when the skeleton re-renders.
+ */
+const barWidth = (row: number, column: number, min: number, spread: number) =>
+  `${Math.round(min + ((((row + 1) * 37 + column * 53) % 100) * spread) / 100)}%`;
+
 export const TableSkeleton: React.FC<TableSkeletonProps> = ({ rows = 10, className = '' }) => {
   return (
     <div aria-hidden="true" className={`overflow-x-auto ${className}`}>
@@ -29,33 +37,33 @@ export const TableSkeleton: React.FC<TableSkeletonProps> = ({ rows = 10, classNa
               <td className="px-3 sm:px-6 py-3 sm:py-4">
                 <div
                   className="h-4 bg-gray-200 rounded-sm mb-2"
-                  style={{ width: `${Math.random() * 40 + 60}%` }}
+                  style={{ width: barWidth(rowIndex, 0, 60, 40) }}
                 ></div>
                 <div
                   className="h-3 bg-gray-200 rounded-sm sm:hidden"
-                  style={{ width: `${Math.random() * 20 + 30}%` }}
+                  style={{ width: barWidth(rowIndex, 1, 30, 20) }}
                 ></div>
               </td>
               <td className="px-3 sm:px-6 py-3 sm:py-4 hidden sm:table-cell">
                 <div
                   className="h-4 bg-gray-200 rounded-sm"
-                  style={{ width: `${Math.random() * 20 + 40}%` }}
+                  style={{ width: barWidth(rowIndex, 2, 40, 20) }}
                 ></div>
               </td>
               <td className="px-3 sm:px-6 py-3 sm:py-4">
                 <div
                   className="h-4 bg-gray-200 rounded-sm mb-2"
-                  style={{ width: `${Math.random() * 30 + 50}%` }}
+                  style={{ width: barWidth(rowIndex, 3, 50, 30) }}
                 ></div>
                 <div
                   className="h-3 bg-gray-200 rounded-sm md:hidden"
-                  style={{ width: `${Math.random() * 20 + 30}%` }}
+                  style={{ width: barWidth(rowIndex, 4, 30, 20) }}
                 ></div>
               </td>
               <td className="px-3 sm:px-6 py-3 sm:py-4 hidden md:table-cell">
                 <div
                   className="h-4 bg-gray-200 rounded-sm"
-                  style={{ width: `${Math.random() * 25 + 35}%` }}
+                  style={{ width: barWidth(rowIndex, 5, 35, 25) }}
                 ></div>
               </td>
             </tr>
