@@ -7,6 +7,8 @@
 
 [![Choosing Europe narrows 250 countries to 53, paging to page 2, then typing "land" filters the table to 8 countries as you type](docs/demo.gif)](https://rveruna.github.io/country-data-table/)
 
+Want the longer version? [Watch the full one-minute walkthrough](demo.gif) (a 20 MB GIF).
+
 A responsive table of the world's countries with filtering, search, pagination and shareable URLs. Built with React, TypeScript, Recoil and Tailwind CSS, with a small `fetch`-based GraphQL client. It scores **100 on all four Lighthouse categories** (performance, accessibility, best practices and SEO, on simulated mobile) and ships 86 kB of JavaScript gzipped; see [docs/performance.md](docs/performance.md) for how that was measured.
 
 Data comes from the public [Countries GraphQL API](https://countries.trevorblades.com/).
