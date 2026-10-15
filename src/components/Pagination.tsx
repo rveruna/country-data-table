@@ -52,7 +52,7 @@ const PaginationBase: React.FC<PaginationProps> = ({ className = '' }) => {
           id={pageSizeId}
           value={pagination.limit}
           onChange={(e) => handleLimitChange(Number(e.target.value))}
-          className="border border-gray-300 rounded-md px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="border border-gray-300 rounded-md px-2 py-1 text-sm focus:outline-hidden focus:ring-2 focus:ring-blue-500"
         >
           {PAGINATION_OPTIONS.map((option) => (
             <option key={option} value={option}>

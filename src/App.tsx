@@ -20,7 +20,7 @@ function App() {
           <div className="max-w-7xl mx-auto px-4">
             <h1 className="text-4xl font-bold text-gray-800 mb-8 text-center">Country Data Table</h1>
 
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-6">
+            <div className="bg-white rounded-lg shadow-xs border border-gray-200 p-4 mb-6">
               <div className="flex justify-between items-center">
                 <div>
                   <h2 className="text-xl font-semibold text-gray-800">Country Directory</h2>
@@ -29,18 +29,18 @@ function App() {
                   </p>
                 </div>
                 <div className="text-right">
-                  <div className="animate-pulse bg-gray-200 rounded h-8 w-16 mb-2"></div>
-                  <div className="animate-pulse bg-gray-200 rounded h-4 w-24"></div>
+                  <div className="animate-pulse bg-gray-200 rounded-sm h-8 w-16 mb-2"></div>
+                  <div className="animate-pulse bg-gray-200 rounded-sm h-4 w-24"></div>
                 </div>
               </div>
             </div>
 
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-6">
+            <div className="bg-white rounded-lg shadow-xs border border-gray-200 p-4 mb-6">
               <div className="animate-pulse space-y-4">
-                <div className="bg-gray-200 rounded h-10 w-full"></div>
+                <div className="bg-gray-200 rounded-sm h-10 w-full"></div>
                 <div className="flex space-x-4">
-                  <div className="bg-gray-200 rounded h-10 flex-1"></div>
-                  <div className="bg-gray-200 rounded h-10 flex-1"></div>
+                  <div className="bg-gray-200 rounded-sm h-10 flex-1"></div>
+                  <div className="bg-gray-200 rounded-sm h-10 flex-1"></div>
                 </div>
               </div>
             </div>
@@ -49,9 +49,9 @@ function App() {
               <TableSkeleton rows={10} />
               <div className="border-t border-gray-200 p-4">
                 <div className="flex justify-between items-center">
-                  <div className="animate-pulse bg-gray-200 rounded h-8 w-32"></div>
-                  <div className="animate-pulse bg-gray-200 rounded h-8 w-48"></div>
-                  <div className="animate-pulse bg-gray-200 rounded h-8 w-40"></div>
+                  <div className="animate-pulse bg-gray-200 rounded-sm h-8 w-32"></div>
+                  <div className="animate-pulse bg-gray-200 rounded-sm h-8 w-48"></div>
+                  <div className="animate-pulse bg-gray-200 rounded-sm h-8 w-40"></div>
                 </div>
               </div>
             </div>

@@ -35,10 +35,10 @@ const FilterControlsBase: React.FC<FilterControlsProps> = ({ className = '' }) =
   const hasActiveFilters = filters.continent || filters.currency || filters.search;
 
   return (
-    <div className={`bg-white rounded-lg shadow-sm border border-gray-200 p-3 sm:p-4 ${className}`}>
+    <div className={`bg-white rounded-lg shadow-xs border border-gray-200 p-3 sm:p-4 ${className}`}>
       <div className="space-y-4 lg:space-y-0 lg:flex lg:gap-4">
         <div className="flex-1 space-y-4 lg:space-y-0 lg:flex lg:gap-4">
-          <SearchInput className="flex-1 lg:flex-2" />
+          <SearchInput className="flex-1" />
 
           <div className="flex flex-col sm:flex-row gap-4 lg:flex-1">
             <FilterDropdown
