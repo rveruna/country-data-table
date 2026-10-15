@@ -22,5 +22,5 @@ jobs:
       - run: npm run test:coverage
       - name: Bundle size budget
         run: npm run size
-      - name: Lighthouse performance score
-        run: npm run perf:lighthouse -- --runs 3 --label ci --min-score 90
+      - name: Lighthouse scores
+        run: npm run perf:lighthouse -- --runs 3 --label ci --min-score 90 --min-quality 95

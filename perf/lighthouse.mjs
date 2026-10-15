@@ -1,6 +1,7 @@
 // Builds the app against the mock API, serves it, and runs Lighthouse several times in real Chrome.
-// Usage: node perf/lighthouse.mjs [--runs 5] [--label baseline] [--min-score 90]
-// With --min-score it exits with an error when the median performance score is lower.
+// Usage: node perf/lighthouse.mjs [--runs 5] [--label baseline] [--min-score 90] [--min-quality 95]
+// --min-score fails the run when the median performance score is lower; --min-quality does the same for the
+// accessibility, best-practices and SEO scores.
 // Set CHROME_PATH if Chrome is not in the default location.
 import { spawn, spawnSync } from 'node:child_process';
 import { mkdirSync, writeFileSync } from 'node:fs';
@@ -12,6 +13,7 @@ const flag = (name, fallback) => {
 const runs = Number(flag('runs', 5));
 const label = flag('label', 'run');
 const minScore = flag('min-score', undefined);
+const minQuality = flag('min-quality', undefined);
 const API = 'http://localhost:4000/graphql';
 const APP = 'http://localhost:4173';
 const chrome =
@@ -50,7 +52,7 @@ try {
   for (let i = 0; i < runs; i++) {
     const lh = spawnSync(
       'npx',
-      ['-y', 'lighthouse', APP, '--output=json', '--output-path=stdout', '--quiet', '--only-categories=performance', '--chrome-flags=--headless=new --no-sandbox'],
+      ['-y', 'lighthouse', APP, '--output=json', '--output-path=stdout', '--quiet', '--only-categories=performance,accessibility,best-practices,seo', '--chrome-flags=--headless=new --no-sandbox'],
       { env: { ...process.env, CHROME_PATH: chrome }, encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 },
     );
     if (lh.status !== 0) throw new Error(`lighthouse failed: ${lh.stderr.slice(0, 300)}`);
@@ -58,6 +60,9 @@ try {
     const a = r.audits;
     results.push({
       score: Math.round(r.categories.performance.score * 100),
+      accessibility: Math.round(r.categories.accessibility.score * 100),
+      bestPractices: Math.round(r.categories['best-practices'].score * 100),
+      seo: Math.round(r.categories.seo.score * 100),
       fcp: a['first-contentful-paint'].numericValue,
       lcp: a['largest-contentful-paint'].numericValue,
       tbt: a['total-blocking-time'].numericValue,
@@ -72,6 +77,9 @@ try {
   const med = Object.fromEntries(Object.keys(results[0]).map((k) => [k, median(results.map((x) => x[k]))]));
   console.log(`\nMedian of ${runs} runs (${label}), mobile emulation, simulated Slow 4G, 150 ms API delay:`);
   console.log(`  Performance score   ${med.score}`);
+  console.log(`  Accessibility       ${med.accessibility}`);
+  console.log(`  Best practices      ${med.bestPractices}`);
+  console.log(`  SEO                 ${med.seo}`);
   console.log(`  First Contentful    ${Math.round(med.fcp)} ms`);
   console.log(`  Largest Contentful  ${Math.round(med.lcp)} ms`);
   console.log(`  Total Blocking Time ${Math.round(med.tbt)} ms`);
@@ -82,6 +90,11 @@ try {
   mkdirSync(new URL('./results/', import.meta.url), { recursive: true });
   writeFileSync(new URL(`./results/${label}.json`, import.meta.url), JSON.stringify({ label, runs, median: med, all: results }, null, 2));
 
+  const weak = ['accessibility', 'bestPractices', 'seo'].filter((k) => minQuality !== undefined && med[k] < Number(minQuality));
+  if (weak.length > 0) {
+    console.error(`\n${weak.join(', ')} below the minimum of ${minQuality}.`);
+    process.exitCode = 1;
+  }
   if (minScore !== undefined && med.score < Number(minScore)) {
     console.error(`\nPerformance score ${med.score} is below the minimum of ${minScore}.`);
     process.exitCode = 1;
