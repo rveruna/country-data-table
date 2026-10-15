@@ -23,7 +23,7 @@ export const paginationState = atom<PaginationState>({
 
 export const loadingState = atom<boolean>({
   key: 'loadingState',
-  default: false,
+  default: true,
 });
 
 export const errorState = atom<string | null>({
